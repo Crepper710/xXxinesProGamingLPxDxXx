@@ -1,0 +1,17 @@
+"Du erwachst in einem dunklen Raum und weißt nicht wo du bist."
+if umsehen:
+	"Es ist ein kleiner Raum mit einem schäbigen Bett, einem kleinen vergitterten Fenster und einer Tür. Willst du etwas untersuchen?"
+	if ja:
+		"Was willst du untersuchen?"
+		if Bett:
+			"Es ist ein kleines und sehr altes Bett. Das Kissen und die Decke sind löchrig und stinken. Willst du das Bett weiter untersuchen"
+			if ja:
+				"Auf der Matratze wachsen Pilze. Willst du einen mitnähmen?"
+				if ja:
+					var: Pilz=True
+			goto: 3
+		if Fenster:
+			"Das Fenster ist zu hoch und zu klein um hindurch zu klettern. Du sieht das es Nacht ist."
+			goto: 3
+		if Tür:
+			"Tür ist verschlossen. Willst du sie untersuchen?"
