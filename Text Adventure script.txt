@@ -1,6 +1,6 @@
-"Du erwachst in einem dunklen Raum und weißt nicht wo du bist."
-if umsehen:
-	"Es ist ein kleiner Raum mit einem schäbigen Bett, einem kleinen vergitterten Fenster und einer Tür. Willst du etwas untersuchen?"
+"Du erwachst in einem dunklen Raum und weißt nicht wo du bist. Du siehst dich um"
+field: Startraum
+	"Es ist ein kleiner Raum mit einem schäbigen Bett, einem kleinen vergitterten Fenster, einem Stuhl und einer Tür. Willst du etwas untersuchen?"
 	if ja:
 		"Was willst du untersuchen?"
 		if Bett:
@@ -13,15 +13,38 @@ if umsehen:
 		if Fenster:
 			"Das Fenster ist zu hoch und zu klein um hindurch zu klettern. Du sieht das es Nacht ist. Hier gibt es nichts mehr."
 			goto: 3
+		if Stuhl:
+			"Es ist ein Stuhl. Er sieht ungewöhnlich schwer aus. Willst du ihn aufheben?"
+			if ja:
+				"Du hast den Stuhl aufgehoben."
+				var: Stuhl=True
+			goto: 3
 		if Tür:
 			"Tür ist verschlossen. Willst du sie untersuchen?"
 			if ja:
-				"Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss."
+				"Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss. Etwas schweres könnte die Tür zerstören"
 				if (var: Stuhl=True):
-					"Sie sieht gebrächlich aus. Willst du mit dem Stuhl darauf einschlagen?
+					"Willst du mit dem Stuhl darauf einschlagen?"
 					if ja:
 						"Die Tür und der Stuhl zerbersten gleichzeitig in einem sehr lauten Kracher. Du kannst nun das Zimmer verlassen."
 						var: Tür1=True
 						var: Stuhl=False
 			if (var: Tür1=True):
-				"Du kannst diesen Raum verlassen. Wohin willst du gehen?
+				"Du kannst diesen Raum verlassen. Willst du ihn verlassen?"
+				if ja:
+					"Du verlässt den Raum"
+					goto: Gang_1-2
+field: Gang_1-2
+	"Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden und zwei Türen."
+	if (var: Gang_1-2_betreten=True):
+		"Die erste Tür führt zum Raum, in welchem du aufgewacht bist und die zweite Tür führt zum zentralen Raum, in welchem das mystische Tor steht.
+	if (var: Gang_1-2_betreten=False):
+		"Die erste Tür führt zum Raum, in welchem du aufgewacht bist. Die zweite Tür hast du noch nicht betreten." "Welche Tür willst du betreten?"
+		var: Gang_1-2_betreten=True
+	"Durch welche Tür willst du gehen?"
+	if erste:
+		goto: Startraum
+	if zweite:
+		goto: Portalraum
+field: Portalraum
+	
