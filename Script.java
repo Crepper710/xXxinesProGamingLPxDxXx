@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,24 +13,22 @@ import java.util.stream.Collectors;
 public class Script {
 	
 	public static void main(String[] args) throws IOException {
-		String script = new String(Files.readAllBytes(Paths.get(args[0])), StandardCharsets.UTF_8);
+		String script = new String(Files.readAllBytes(Paths.get(new File(args[0]).toURI())), StandardCharsets.UTF_8);
 		preProcess(script);
 	}
 	
 	public static void preProcess(String script) {
 		script = script.trim();
 		String[] lines = script.split(System.lineSeparator());
-		HashSet<String> varNames = new HashSet<>();
-		HashMap<String, Action.Context> fields = new HashMap<>();
 		ObjectInteger currLine = new ObjectInteger(0);
 		try {
-			readNextBlock(lines, varNames, fields, 0, currLine);
+			readNextBlock(lines, 0, currLine);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static Action.Context readStatment(String[] lines, HashSet<String> varNames, HashMap<String, Action.Context> fields, HashMap<String, List<Action.Context>> currIfTree,int currTab, ObjectInteger currLine) throws Exception {
+	public static Action.Context readStatment(String[] lines, HashMap<String, List<Action.Context>> currIfTree, int currTab, ObjectInteger currLine) throws Exception {
 		if (currLine.get() < lines.length) {
 			String nextLine = lines[currLine.get()];
 			System.out.println(nextLine);
@@ -102,7 +101,7 @@ public class Script {
 					throw new IllegalArgumentException();
 				}
 				currLine.set(currLine.get() + 1);
-				List<Action.Context> actions = readNextBlock(lines, varNames, fields, currTab + 1, currLine);
+				List<Action.Context> actions = readNextBlock(lines, currTab + 1, currLine);
 				if (nextLine.startsWith("(") && nextLine.endsWith(")")) {
 					action = Action.IF.context(actions);
 				} else {
@@ -121,7 +120,7 @@ public class Script {
 					throw new IllegalArgumentException();
 				}
 				currLine.set(currLine.get() + 1);
-				List<Action.Context> actions = readNextBlock(lines, varNames, fields, currTab + 1, currLine);
+				List<Action.Context> actions = readNextBlock(lines, currTab + 1, currLine);
 				action = Action.FIELD.context(actions);
 			}break;
 			default:
@@ -133,7 +132,7 @@ public class Script {
 		throw new Exception("Failed to read line: " + currLine.get());
 	}
 	
-	public static List<Action.Context> readNextBlock(String[] lines, HashSet<String> varNames, HashMap<String, Action.Context> fields, int currTab, ObjectInteger currLine) throws Exception {
+	public static List<Action.Context> readNextBlock(String[] lines, int currTab, ObjectInteger currLine) throws Exception {
 		List<Action.Context> result = new ArrayList<>();
 		HashMap<String, List<Action.Context>> currIfTree = new HashMap<>();
 		while(currLine.get() < lines.length) {
@@ -142,7 +141,7 @@ public class Script {
 			if ((!nextLine.startsWith(tabPattern)) || nextLine.startsWith(tabPattern + "\t")) {
 				break;
 			}
-			Action.Context action = readStatment(lines, varNames, fields, currIfTree, currTab, currLine);
+			Action.Context action = readStatment(lines, currIfTree, currTab, currLine);
 			if (action.getAction() != Action.IF_PLACEHOLDER) {
 				if (currIfTree.size() != 0) {
 					action = Action.IF_TREE.context(currIfTree);
