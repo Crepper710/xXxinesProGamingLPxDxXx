@@ -23,22 +23,22 @@ field: Startraum
 			"Tür ist verschlossen. Willst du sie untersuchen?"
 			if ja:
 				"Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss. Etwas schweres könnte die Tür zerstören"
-				if (var: Stuhl=True):
+				if (Stuhl=True):
 					"Willst du mit dem Stuhl darauf einschlagen?"
 					if ja:
 						"Die Tür und der Stuhl zerbersten gleichzeitig in einem sehr lauten Kracher. Du kannst nun das Zimmer verlassen."
 						var: Tür1=True
 						var: Stuhl=False
-			if (var: Tür1=True):
+			if (Tür1=True):
 				"Du kannst diesen Raum verlassen. Willst du ihn verlassen?"
 				if ja:
 					"Du verlässt den Raum"
 					goto: Gang_1-2
 field: Gang_1-2
 	"Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden und zwei Türen."
-	if (var: Gang_1-2_betreten=True):
+	if (Gang_1-2_betreten=True):
 		"Die erste Tür führt zum Raum, in welchem du aufgewacht bist und die zweite Tür führt zum zentralen Raum, in welchem das mystische Tor steht.
-	if (var: Gang_1-2_betreten=False):
+	if (Gang_1-2_betreten=False):
 		"Die erste Tür führt zum Raum, in welchem du aufgewacht bist. Die zweite Tür hast du noch nicht betreten." "Welche Tür willst du betreten?"
 		var: Gang_1-2_betreten=True
 	"Durch welche Tür willst du gehen?"

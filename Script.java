@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class Script {
 	
 	public static void main(String[] args) throws IOException {
-		String script = new String(Files.readAllBytes(Paths.get("C:\\Users\\thor\\Desktop\\skript.txt")), StandardCharsets.UTF_8);
+		String script = new String(Files.readAllBytes(Paths.get(args[0])), StandardCharsets.UTF_8);
 		preProcess(script);
 	}
 	
