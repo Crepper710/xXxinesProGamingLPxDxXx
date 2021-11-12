@@ -6,7 +6,7 @@ field: Startraum
 		if Bett:
 			"Es ist ein kleines und sehr altes Bett. Das Kissen und die Decke sind löchrig und stinken. Willst du das Bett weiter untersuchen"
 			if ja:
-				"Auf der Matratze wachsen Pilze. Willst du einen mitnähmen?"
+				"Auf der Matratze wachsen Pilze. Willst du einen mitnehmen?"
 				if ja:
 					var: Pilz=True
 			goto: 3
