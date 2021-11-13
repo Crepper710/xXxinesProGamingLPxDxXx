@@ -1,1 +1,206 @@
-
+<vxml>
+	<form id="start">
+		<block>
+			<prompt>
+				Du erwachst in einem dunklen Raum und weißt nicht wo du bist. Du siehst dich um
+			</prompt>
+			<goto next="#Startraum"/>
+		</block>
+	</form>
+	<form id="Startraum_548DC7EBC1E86D80">
+		<field name="0">
+			<prompt>
+				Es ist ein Stuhl. Er sieht ungewöhnlich schwer aus. Willst du ihn aufheben? <enumerate/>
+			</prompt>
+			<option value="ja">ja</option>
+			<filled>
+				<if cond="0='ja'">
+					<prompt>
+						Du hast den Stuhl aufgehoben.
+					</prompt>
+					<assign name"Stuhl" expr="True"/>
+				</if>
+			</filled>
+		</field>
+		<block>
+			<goto next="#Startraum_385D817802AE346C"/>
+		</block>
+	</form>
+	<form id="Startraum_8C3EFD4539E9FC8A_291362C06584D9C9">
+		<field name="1">
+			<prompt>
+				Willst du mit dem Stuhl darauf einschlagen? <enumerate/>
+			</prompt>
+			<option value="ja">ja</option>
+			<filled>
+				<if cond="1='ja'">
+					<prompt>
+						Die Tür und der Stuhl zerbersten gleichzeitig in einem sehr lauten Kracher. Du kannst nun das Zimmer verlassen.
+					</prompt>
+					<assign name"Tür1" expr="True"/>
+					<assign name"Stuhl" expr="False"/>
+				</if>
+			</filled>
+		</field>
+		<block>
+			<goto next="#Startraum_8C3EFD4539E9FC8A"/>
+		</block>
+	</form>
+	<form id="Startraum_8C3EFD4539E9FC8A">
+		<field name="2">
+			<prompt>
+				Tür ist verschlossen. Willst du sie untersuchen? <enumerate/>
+			</prompt>
+			<option value="ja">ja</option>
+			<filled>
+				<if cond="2='ja'">
+					<prompt>
+						Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss. Etwas schweres könnte die Tür zerstören
+					</prompt>
+					<if cond="Stuhl=True">
+						<goto next="#Startraum_8C3EFD4539E9FC8A_291362C06584D9C9"/>
+					</if>
+				</if>
+			</filled>
+		</field>
+		<block>
+			<goto next="#Startraum_385D817802AE346C"/>
+		</block>
+	</form>
+	<form id="Startraum_385D817802AE346C_7EFE280DC7FC40F0">
+		<field name="3">
+			<prompt>
+				Auf der Matratze wachsen Pilze. Willst du einen mitnehmen? <enumerate/>
+			</prompt>
+			<option value="ja">ja</option>
+			<filled>
+				<if cond="3='ja'">
+					<assign name"Pilz" expr="True"/>
+				</if>
+			</filled>
+		</field>
+		<block>
+			<goto next="#Startraum_64C9E812C536751B"/>
+		</block>
+	</form>
+	<form id="Startraum_64C9E812C536751B">
+		<field name="4">
+			<prompt>
+				Es ist ein kleines und sehr altes Bett. Das Kissen und die Decke sind löchrig und stinken. Willst du das Bett weiter untersuchen <enumerate/>
+			</prompt>
+			<option value="ja">ja</option>
+			<filled>
+				<if cond="4='ja'">
+					<goto next="#Startraum_385D817802AE346C_7EFE280DC7FC40F0"/>
+				</if>
+			</filled>
+		</field>
+		<block>
+			<goto next="#Startraum_385D817802AE346C"/>
+		</block>
+	</form>
+	<form id="Startraum_385D817802AE346C">
+		<field name="5">
+			<prompt>
+				Was willst du untersuchen? <enumerate/>
+			</prompt>
+			<option value="Stuhl">Stuhl</option>
+			<option value="Tür">Tür</option>
+			<option value="Bett">Bett</option>
+			<option value="Fenster">Fenster</option>
+			<filled>
+				<if cond="5='Stuhl'">
+					<goto next="#Startraum_548DC7EBC1E86D80"/>
+				</if>
+				<if cond="5='Tür'">
+					<goto next="#Startraum_8C3EFD4539E9FC8A"/>
+				</if>
+				<if cond="5='Bett'">
+					<goto next="#Startraum_64C9E812C536751B"/>
+				</if>
+				<if cond="5='Fenster'">
+					<prompt>
+						Das Fenster ist zu hoch und zu klein um hindurch zu klettern. Du sieht das es Nacht ist. Hier gibt es nichts mehr.
+					</prompt>
+					<goto next="#3"/>
+				</if>
+			</filled>
+		</field>
+		<block>
+			<goto next="#Startraum"/>
+		</block>
+	</form>
+	<form id="Startraum">
+		<field name="6">
+			<prompt>
+				Es ist ein kleiner Raum mit einem schäbigen Bett, einem kleinen vergitterten Fenster, einem Stuhl und einer Tür. Willst du etwas untersuchen? <enumerate/>
+			</prompt>
+			<option value="ja">ja</option>
+			<filled>
+				<if cond="6='ja'">
+					<goto next="#Startraum_385D817802AE346C"/>
+				</if>
+			</filled>
+		</field>
+		<block>
+			<goto next="#Startraum"/>
+		</block>
+	</form>
+	<form id="Gang_1-2">
+		<block>
+			<prompt>
+				Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden und zwei Türen.
+			</prompt>
+			<if cond="Gang_1-2_betreten=True">
+				<prompt>
+					Die erste Tür führt zum Raum, in welchem du aufgewacht bist und die zweite Tür führt zum zentralen Raum, in welchem das mystische Tor steht.
+				</prompt>
+			</if>
+			<if cond="Gang_1-2_betreten=False">
+				<prompt>
+					Die erste Tür führt zum Raum, in welchem du aufgewacht bist. Die zweite Tür hast du noch nicht betreten." "Welche Tür willst du betreten?
+				</prompt>
+				<assign name"Gang_1-2_betreten" expr="True"/>
+			</if>
+		</block>
+		<field name="7">
+			<prompt>
+				Durch welche Tür willst du gehen? <enumerate/>
+			</prompt>
+			<option value="erste">erste</option>
+			<option value="zweite">zweite</option>
+			<filled>
+				<if cond="7='erste'">
+					<goto next="#Startraum"/>
+				</if>
+				<if cond="7='zweite'">
+					<goto next="#Portalraum"/>
+				</if>
+			</filled>
+		</field>
+		<block>
+			<goto next="#Gang_1-2"/>
+		</block>
+	</form>
+	<form id="Portalraum">
+		<field name="8">
+			<prompt>
+				just <enumerate/>
+			</prompt>
+			<option value="for">for</option>
+			<filled>
+				<if cond="8='for'">
+					<prompt>
+						testing
+					</prompt>
+				</if>
+			</filled>
+		</field>
+		<block>
+			<goto next="#Portalraum"/>
+		</block>
+	</form>
+	<form id="end">
+		
+	</form>
+</vxml>
