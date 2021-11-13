@@ -323,8 +323,10 @@ public class ScriptConverter {
 		}
 	}
 	
+	private static int counter = 0;
+	
 	public static String getUUID() {
-		byte[] a = ByteBuffer.allocate(8).putLong(System.nanoTime()).array();
+		byte[] a = ByteBuffer.allocate(8).putLong(System.nanoTime() + (++counter)).array();
 		byte[] b = ByteBuffer.allocate(8).putLong(new SecureRandom().nextLong()).array();
 		for (int i = 0; i < b.length; i++) {
 			a[i] = (byte) (a[i] ^ b[i]);
