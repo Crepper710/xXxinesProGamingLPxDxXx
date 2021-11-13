@@ -23,5 +23,9 @@ public class Prompt extends VXMLAction {
 			.append("</prompt>");
 		return sb.toString();
 	}
+	
+	public String getText() {
+		return text;
+	}
 
 }
