@@ -77,7 +77,7 @@ public class VXMLForm {
 		}
 		sb.append(t).append(t).append("<filled>").append(nl);
 		for (Entry<String, List<VXMLAction>> e : options.entrySet()) {
-			sb.append(t).append(t).append(t).append("<if cond=\"").append(id).append("=").append(e.getKey()).append("\">").append(nl);
+			sb.append(t).append(t).append(t).append("<if cond=\"").append(id).append("='").append(e.getKey()).append("'\">").append(nl);
 			for (VXMLAction action : e.getValue()) {
 				for(String line : action.toString(prettyPrint).split(System.lineSeparator())) {
 					sb.append(t).append(t).append(t).append(t).append(line).append(nl);
@@ -104,7 +104,7 @@ public class VXMLForm {
 		}
 		sb.append("</form>");
 		id++;
-		return null;
+		return sb.toString();
 	}
 	
 }

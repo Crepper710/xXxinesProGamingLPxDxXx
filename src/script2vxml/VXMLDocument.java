@@ -50,7 +50,7 @@ public class VXMLDocument {
 			.append(t).append(t).append(nl)
 			.append(t).append("</form>").append(nl)
 			.append("</vxml>");
-		return super.toString();
+		return sb.toString();
 	}
 	
 }
