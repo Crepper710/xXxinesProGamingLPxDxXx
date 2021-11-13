@@ -47,4 +47,6 @@ field: Gang_1-2
 	if zweite:
 		goto: Portalraum
 field: Portalraum
-	
+	"just"
+	if for:
+		"testing"
