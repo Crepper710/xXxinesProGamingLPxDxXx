@@ -1,4 +1,6 @@
-package actions;
+package script2vxml.actions;
+
+import script2vxml.VXMLAction;
 
 public class Prompt extends VXMLAction {
 	

@@ -1,10 +1,12 @@
-package actions;
+package script2vxml;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class Field extends VXMLAction {
+import script2vxml.actions.Prompt;
+
+public class VXMLForm {
 	
 	public static String DEFAULT_PRE_PROMPT = "Wähle";
 	
@@ -14,7 +16,7 @@ public class Field extends VXMLAction {
 	private final String safeStateID; // just for failsafe if the field is failing so ines doesnt crash, or something else
 	private final List<VXMLAction> postOption;
 	
-	public Field(String name, Map<String, List<VXMLAction>> options, List<VXMLAction> preOption, String safeStateID, List<VXMLAction> postOption) {
+	public VXMLForm(String name, Map<String, List<VXMLAction>> options, List<VXMLAction> preOption, String safeStateID, List<VXMLAction> postOption) {
 		this.name = name;
 		this.options = options;
 		this.preOption = preOption;
@@ -25,6 +27,10 @@ public class Field extends VXMLAction {
 	private static int id = 0;
 	
 	@Override
+	public String toString() {
+		return this.toString(true);
+	}
+	
 	public String toString(boolean prettyPrint) {
 		String t = "";
 		String nl = "";

@@ -1,6 +1,8 @@
-package actions;
+package script2vxml.actions;
 
 import java.util.List;
+
+import script2vxml.VXMLAction;
 
 public class If extends VXMLAction {
 	
