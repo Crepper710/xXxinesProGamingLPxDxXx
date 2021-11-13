@@ -7,7 +7,7 @@
 			<goto next="#Startraum"/>
 		</block>
 	</form>
-	<form id="Startraum_548DC7EBC1E86D80">
+	<form id="Startraum_EFF766C34BC3BD98">
 		<field name="0">
 			<prompt>
 				Es ist ein Stuhl. Er sieht ungewöhnlich schwer aus. Willst du ihn aufheben? <enumerate/>
@@ -23,10 +23,10 @@
 			</filled>
 		</field>
 		<block>
-			<goto next="#Startraum_385D817802AE346C"/>
+			<goto next="#Startraum_C02996E695BFBF1B"/>
 		</block>
 	</form>
-	<form id="Startraum_8C3EFD4539E9FC8A_291362C06584D9C9">
+	<form id="Startraum_ED43ADB3A6352322_6E0D6BE9B83B6616">
 		<field name="1">
 			<prompt>
 				Willst du mit dem Stuhl darauf einschlagen? <enumerate/>
@@ -43,10 +43,10 @@
 			</filled>
 		</field>
 		<block>
-			<goto next="#Startraum_8C3EFD4539E9FC8A"/>
+			<goto next="#Startraum_ED43ADB3A6352322"/>
 		</block>
 	</form>
-	<form id="Startraum_8C3EFD4539E9FC8A">
+	<form id="Startraum_ED43ADB3A6352322">
 		<field name="2">
 			<prompt>
 				Tür ist verschlossen. Willst du sie untersuchen? <enumerate/>
@@ -58,16 +58,16 @@
 						Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss. Etwas schweres könnte die Tür zerstören
 					</prompt>
 					<if cond="Stuhl=True">
-						<goto next="#Startraum_8C3EFD4539E9FC8A_291362C06584D9C9"/>
+						<goto next="#Startraum_ED43ADB3A6352322_6E0D6BE9B83B6616"/>
 					</if>
 				</if>
 			</filled>
 		</field>
 		<block>
-			<goto next="#Startraum_385D817802AE346C"/>
+			<goto next="#Startraum_C02996E695BFBF1B"/>
 		</block>
 	</form>
-	<form id="Startraum_385D817802AE346C_7EFE280DC7FC40F0">
+	<form id="Startraum_C02996E695BFBF1B_F1BF9692957DE6ED">
 		<field name="3">
 			<prompt>
 				Auf der Matratze wachsen Pilze. Willst du einen mitnehmen? <enumerate/>
@@ -80,10 +80,10 @@
 			</filled>
 		</field>
 		<block>
-			<goto next="#Startraum_64C9E812C536751B"/>
+			<goto next="#Startraum_6605BE16A3EDEE3B"/>
 		</block>
 	</form>
-	<form id="Startraum_64C9E812C536751B">
+	<form id="Startraum_6605BE16A3EDEE3B">
 		<field name="4">
 			<prompt>
 				Es ist ein kleines und sehr altes Bett. Das Kissen und die Decke sind löchrig und stinken. Willst du das Bett weiter untersuchen <enumerate/>
@@ -91,15 +91,15 @@
 			<option value="ja">ja</option>
 			<filled>
 				<if cond="4='ja'">
-					<goto next="#Startraum_385D817802AE346C_7EFE280DC7FC40F0"/>
+					<goto next="#Startraum_C02996E695BFBF1B_F1BF9692957DE6ED"/>
 				</if>
 			</filled>
 		</field>
 		<block>
-			<goto next="#Startraum_385D817802AE346C"/>
+			<goto next="#Startraum_C02996E695BFBF1B"/>
 		</block>
 	</form>
-	<form id="Startraum_385D817802AE346C">
+	<form id="Startraum_C02996E695BFBF1B">
 		<field name="5">
 			<prompt>
 				Was willst du untersuchen? <enumerate/>
@@ -110,13 +110,13 @@
 			<option value="Fenster">Fenster</option>
 			<filled>
 				<if cond="5='Stuhl'">
-					<goto next="#Startraum_548DC7EBC1E86D80"/>
+					<goto next="#Startraum_EFF766C34BC3BD98"/>
 				</if>
 				<if cond="5='Tür'">
-					<goto next="#Startraum_8C3EFD4539E9FC8A"/>
+					<goto next="#Startraum_ED43ADB3A6352322"/>
 				</if>
 				<if cond="5='Bett'">
-					<goto next="#Startraum_64C9E812C536751B"/>
+					<goto next="#Startraum_6605BE16A3EDEE3B"/>
 				</if>
 				<if cond="5='Fenster'">
 					<prompt>
@@ -138,7 +138,7 @@
 			<option value="ja">ja</option>
 			<filled>
 				<if cond="6='ja'">
-					<goto next="#Startraum_385D817802AE346C"/>
+					<goto next="#Startraum_C02996E695BFBF1B"/>
 				</if>
 			</filled>
 		</field>
