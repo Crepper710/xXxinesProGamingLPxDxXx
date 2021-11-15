@@ -6,11 +6,13 @@ public class VXMLDocument {
 
 	private final List<VXMLAction> preActions;
 	private final List<VXMLForm> forms;
+	private final List<String> varNames;
 	private final String firstID;
 	
-	public VXMLDocument(List<VXMLAction> preActions, List<VXMLForm> forms, String firstID) {
+	public VXMLDocument(List<VXMLAction> preActions, List<VXMLForm> forms, List<String> varNames, String firstID) {
 		this.preActions = preActions;
 		this.forms = forms;
+		this.varNames = varNames;
 		this.firstID = firstID;
 	}
 	
@@ -27,8 +29,11 @@ public class VXMLDocument {
 			nl = System.lineSeparator();
 		}
 		StringBuilder sb = new StringBuilder();
+		sb.append("<vxml>").append(nl);
+		for (String varName : varNames) {
+			sb.append(t).append("<var name=\"").append(varName).append("\"/>").append(nl);
+		}
 		sb
-			.append("<vxml>").append(nl)
 			.append(t).append("<form id=\"start\">").append(nl)
 			.append(t).append(t).append("<block>").append(nl);
 		for (VXMLAction action : preActions) {
