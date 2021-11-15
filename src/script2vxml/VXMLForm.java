@@ -77,7 +77,7 @@ public class VXMLForm {
 		}
 		sb.append(t).append(t).append("<filled>").append(nl);
 		for (Entry<String, List<VXMLAction>> e : options.entrySet()) {
-			sb.append(t).append(t).append(t).append("<if cond=\"").append(id).append("='").append(e.getKey()).append("'\">").append(nl);
+			sb.append(t).append(t).append(t).append("<if cond=\"").append(id).append("=='").append(e.getKey()).append("'\">").append(nl);
 			for (VXMLAction action : e.getValue()) {
 				for(String line : action.toString(prettyPrint).split(System.lineSeparator())) {
 					sb.append(t).append(t).append(t).append(t).append(line).append(nl);
@@ -85,26 +85,26 @@ public class VXMLForm {
 			}
 			sb.append(t).append(t).append(t).append("</if>").append(nl);
 		}
-		sb.append(t).append(t).append("</filled>").append(nl);
-		sb.append(t).append("</field>").append(nl);
 		if (postOption.size() >= 1) {
-			sb.append(t).append("<block>").append(nl);
 			for (VXMLAction action : postOption) {
 				for(String line : action.toString(prettyPrint).split(System.lineSeparator())) {
-					sb.append(t).append(t).append(line).append(nl);
+					sb.append(t).append(t).append(t).append(line).append(nl);
 				}
 			}
-			sb.append(t).append("</block>").append(nl);
 		}
 		if (safeStateID != null) {
-			sb
-				.append(t).append("<block>").append(nl)
-				.append(t).append(t).append("<goto next=\"#").append(safeStateID).append("\"/>").append(nl)
-				.append(t).append("</block>").append(nl);
+			sb.append(t).append(t).append(t).append("<goto next=\"#").append(safeStateID).append("\"/>").append(nl);
 		}
-		sb.append("</form>");
+		sb
+			.append(t).append(t).append("</filled>").append(nl)
+			.append(t).append("</field>").append(nl)
+			.append("</form>");
 		id++;
 		return sb.toString();
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 }

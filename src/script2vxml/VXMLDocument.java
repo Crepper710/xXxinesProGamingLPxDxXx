@@ -1,6 +1,7 @@
 package script2vxml;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VXMLDocument {
 
@@ -28,19 +29,16 @@ public class VXMLDocument {
 		}
 		StringBuilder sb = new StringBuilder();
 		sb
-			.append("<vxml>").append(nl)
-			.append(t).append("<form id=\"start\">").append(nl)
-			.append(t).append(t).append("<block>").append(nl);
+			.append("<vxml>").append(nl);
 		for (VXMLAction action : preActions) {
 			for(String line : action.toString(prettyPrint).split(System.lineSeparator())) {
-				sb.append(t).append(t).append(t).append(line).append(nl);
+				sb.append(t).append(line).append(nl);
 			}
 		}
-		sb
-			.append(t).append(t).append(t).append("<goto next=\"#").append(firstID).append("\"/>").append(nl)
-			.append(t).append(t).append("</block>").append(nl)
-			.append(t).append("</form>").append(nl);
-		for (VXMLForm form : forms) {
+		for(String line : forms.stream().filter(form -> form.getName().equals(firstID)).findFirst().get().toString(prettyPrint).split(System.lineSeparator())) {
+			sb.append(t).append(line).append(nl);
+		}
+		for (VXMLForm form : forms.stream().filter(form -> !form.getName().equals(firstID)).collect(Collectors.toList())) {
 			for(String line : form.toString(prettyPrint).split(System.lineSeparator())) {
 				sb.append(t).append(line).append(nl);
 			}
