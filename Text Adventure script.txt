@@ -1,4 +1,7 @@
 Schlüssel_Anzahl=0
+Schalter1="oberen"
+Schalter2="oberen"
+Schalter3="oberen"
 
 "Du erwachst in einem dunklen Raum und weißt nicht wo du bist. Du siehst dich um"
 field: Startraum
@@ -50,7 +53,7 @@ field: Gang_1-2
 		var: Gang_1-2_betreten=True
 		goto: Portalraum
 field: Portalraum
-	"Du betrittst einen großen Raum mit einer hohen Decke und retualistischen Dekorationen. Du erblickst ein Tor, welches sich in der Mitte des Raums befindet, einem Schrein mit einer Statue und drei Türen. Die erste Tür führt zu dem Raum, in welchem du aufgewacht bist. Über der zweiten Tür hängt ein Schild mit dem Schriftzug Kanalisation und Schlafbereich. Die dritte Tür ist vergittert mit einem rostigen Schloss. Was wohin willst du gehen?"
+	"Du betrittst einen großen Raum mit einer hohen Decke und retualistischen Dekorationen. Du erblickst ein Tor, welches sich in der Mitte des Raums befindet, einem Schrein mit einer Statue und drei Türen. Die erste Tür führt zu dem Raum, in welchem du aufgewacht bist. Über der zweiten Tür hängt ein Schild mit dem Schriftzug Kanalisation und Schlafbereich. Die dritte Tür ist vergittert mit einem rostigen Schloss. Wohin willst du gehen?"
 	if Tor:
 		"Das Tor besteht  aus einem dir unbekanntem Material und ist bedeckt mit unbekannten Symbolen und drei Schlössern. Du spürst, dass es eine mystische Präsenz ausstrahlt."
 		"Du besitzt <value expr="Schlüssel_Anzahl"/> von drei Schlüsseln."
@@ -108,6 +111,9 @@ field: Gang_2-3
 		var: Gang_2-3_betreten=True
 		goto: Kanalisazion
 field: Gang_2-4
+	if (Falle_aktiv=True):
+		"Du verlässt den Kerker und betrittst den Gang. Auf einmal schnellen viele Stachel aus dem Boden. Du wirst mehrmals durchbohrt und alles um dich wird dunkel."
+		end
 	"Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden, Löcher im Boden, einen Schädel und zwei Türen."
 	if (Gang_2-4_betreten=True):
 		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür führt zum Kerker"
@@ -119,3 +125,49 @@ field: Gang_2-4
 	if zweite:
 		var: Gang_2-4_betreten=True
 		goto: Kerker
+field: Kerker
+	"Der Raum den du betrittst ist in einem ähnlichen Zustand, wie der in dem du aufgewacht bist. Es hängen Ketten an den Wänden und es liegt Stroh auf dem Boden. An einer Wand hängen drei ausgebrannte Fackeln und in der Mitte des Raumes liegt eine Leiche. Wohin willst du gehen?"
+	if Leiche:
+		"Es ist eine sehr alte schon ausgetrocknete Leiche."
+		if (Dolch_genommen="False"):
+			Du entdeckst einen Doch in ihrem Brustkorb. Willst du den Dolch aufheben?"
+			if ja:
+				"Du ziehst den Doch aus der Leiche raus. Dabei fällt dir ein Zettel in der Hand der Leiche auf. Du hebst beide auf."
+				var: Dolch=True
+				"Willst du die Notiz lesen?"
+				if ja:
+					"Auf der Notiz sind ein ein Kreis, ein Quadrat und ein Kreis abgebildet. Die Notiz zerfällt zu Staub."
+					goto: Kerker
+				if nein:
+					"Die Notiz zerfällt zu Staub, ohne das du sie gelesen hast."
+					goto: Kerker
+			if nein:
+				"Die Leiche hat nichts besonderes an sich. Du langweilst dich und gehst zurück"
+				goto: Kerker
+	if Fackeln:
+		"Bei genauerem Ansehen sind es keine normalen Fackeln, sondern schalter. Der erste Schalter ist in der <value expr="Schalter1"/> Position. Der zweite Schalter ist in der <value expr="Schalter2"/> Position. Der dritte Schalter ist in der <value expr="Schalter3"/> Position. Welchen Schalter willst du umschalten?"
+		if ersten:
+			if (Schalter1=="oberen")
+				"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
+				var: Schalter1="untere"
+				goto: Kerker
+			if (Schlater1=="untere"):
+				"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
+				goto: Kerker
+		if zweiten:
+			if (Schalter2=="oberen")
+				"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
+				var: Schalter1="untere"
+				goto: Kerker
+			if (Schlater2=="untere"):
+				"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
+				goto: Kerker
+		if dritten:
+			if (Schalter3=="oberen")
+				"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
+				var: Schalter1="untere"
+				goto: Kerker
+			if (Schlater3=="untere"):
+				"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
+				goto: Kerker
+		
