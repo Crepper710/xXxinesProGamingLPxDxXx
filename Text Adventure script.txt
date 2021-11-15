@@ -42,11 +42,12 @@ field: Gang_1-2
 		"Die erste Tür führt zum Raum, in welchem du aufgewacht bist und die zweite Tür führt zum zentralen Raum, in welchem das mystische Tor steht."
 	if (Gang_1-2_betreten=False):
 		"Die erste Tür führt zum Raum, in welchem du aufgewacht bist. Die zweite Tür hast du noch nicht betreten." "Welche Tür willst du betreten?"
-		var: Gang_1-2_betreten=True
+		
 	"Durch welche Tür willst du gehen?"
 	if erste:
 		goto: Startraum
 	if zweite:
+		var: Gang_1-2_betreten=True
 		goto: Portalraum
 field: Portalraum
 	"Du betrittst einen großen Raum mit einer hohen Decke und retualistischen Dekorationen. Du erblickst ein Tor, welches sich in der Mitte des Raums befindet, einem Schrein mit einer Statue und drei Türen. Die erste Tür führt zu dem Raum, in welchem du aufgewacht bist. Über der zweiten Tür hängt ein Schild mit dem Schriftzug Kanalisation und Schlafbereich. Die dritte Tür ist vergittert mit einem rostigen Schloss. Was wohin willst du gehen?"
@@ -78,3 +79,43 @@ field: Portalraum
 			if ja:
 				"Die Entität ist wütend auf dich. Du spurst ein wachsendes Drücken in deinem Magen. Es quillen Münzen aus deinem Mund. Du fällst auf den Boden. Du stirbst mit höllischen Schmerzen."
 				end
+			if nein:
+				"Du gehtst zurück"
+				goto: Portalraum
+		if erste Tür:
+			"Du gehst durch die erste Tür"
+			goto: Gang_1-2
+			
+			
+			
+		if zweite Tür:
+			"Du gehst durch die zweite Tür"
+			goto: Gang_2-3
+		if dritte Tür:
+			"Du gehst durch die dritte Tür"
+			goto: Gang_2-4
+field: Gang_2-3
+	"Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden und zwei Türen."
+	if (Gang_2-3_betreten=True):
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür führt zur Kanalisazion"
+	if (Gang_2-3_betreten=False):
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür hast du noch nicht betreten."
+		
+	"Durch welche Tür willst du gehen?"
+	if erste:
+		goto: Portalraum
+	if zweite:
+		var: Gang_2-3_betreten=True
+		goto: Kanalisazion
+field: Gang_2-4
+	"Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden, Löcher im Boden, einen Schädel und zwei Türen."
+	if (Gang_2-4_betreten=True):
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür führt zum Kerker"
+	if (Gang_2-4_betreten=False):
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür hast du noch nicht betreten."
+	"Durch welche Tür willst du gehen?"
+	if erste:
+		goto: Portalraum
+	if zweite:
+		var: Gang_2-4_betreten=True
+		goto: Kerker
