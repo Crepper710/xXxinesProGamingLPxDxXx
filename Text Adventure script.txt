@@ -1,3 +1,5 @@
+Schlüssel_Anzahl=0
+
 "Du erwachst in einem dunklen Raum und weißt nicht wo du bist. Du siehst dich um"
 field: Startraum
 	"Es ist ein kleiner Raum mit einem schäbigen Bett, einem kleinen vergitterten Fenster, einem Stuhl und einer Tür. Willst du etwas untersuchen?"
@@ -47,6 +49,32 @@ field: Gang_1-2
 	if zweite:
 		goto: Portalraum
 field: Portalraum
-	"just"
-	if for:
-		"testing"
+	"Du betrittst einen großen Raum mit einer hohen Decke und retualistischen Dekorationen. Du erblickst ein Tor, welches sich in der Mitte des Raums befindet, einem Schrein mit einer Statue und drei Türen. Die erste Tür führt zu dem Raum, in welchem du aufgewacht bist. Über der zweiten Tür hängt ein Schild mit dem Schriftzug Kanalisation und Schlafbereich. Die dritte Tür ist vergittert mit einem rostigen Schloss. Was wohin willst du gehen?"
+	if Tor:
+		"Das Tor besteht  aus einem dir unbekanntem Material und ist bedeckt mit unbekannten Symbolen und drei Schlössern. Du spürst, dass es eine mystische Präsenz ausstrahlt."
+		"Du besitzt <value expr="Schlüssel_Anzahl"/> von drei Schlüsseln."
+		if Schlüssel_Anzahl=3:
+			"Du hast alle drei Schlüssel gefunden und kannst das Tor öffnen. Willst du das Tor öffen?"
+			if ja:
+				"Du öffnest das Tor. wärend sich das Enorme Tor öffnet spürt du eine enorme Hitze, welche aus dem Tor entweicht. Auf einmal hörst du eine dunkle Stimme aus dem Tor rufen. Sterblicher, du hast das Tor zur Hölle geöffnet. Dank dir können wir endlich diese Welt einnehmen. Das Tor öffnet sich. Eine riesige Hand greift nach dir. Es wird dunkel."
+				end
+			if nein:
+				"Du gehtst zurück"
+				goto: Portalraum
+	if Schrein:
+		"Die, mit der Statue abgebildete, Entität sieht gefärlich aus. Sie lässt sich als das Abbild von Brutatiltät und Erbarmunslosigkeit beschreiben. Sie hält eine Schale in der Hand"
+		if Dolch="True"
+			if Blutopfer="False"
+				"Du kannst mit deinem Doch ein Blutopfer durchführen. Willst du ein Blutopfer durchführen?"
+				if ja:
+					"Die Entität ist zufrieden mit deinem Opfer. Du fällst in Ohnmacht. Etwas später wachst du auf. Du liegst auf dem Boden und bemerkst etwas in deiner Hand. Es ist ein Schlüssel."
+					Schlüssel_Anzahl=Schlüssel_Anzahl+1
+					Blutopfer="True"
+				if nein:
+					"Du gehtst zurück"
+					goto: Portalraum
+		if Münze="True"
+			"Du hast eine antike Münze, welche du Opfern kannst. Willst du sie opfern?"
+			if ja:
+				"Die Entität ist wütend auf dich. Du spurst ein wachsendes Drücken in deinem Magen. Es quillen Münzen aus deinem Mund. Du fällst auf den Boden. Du stirbst mit höllischen Schmerzen."
+				end
