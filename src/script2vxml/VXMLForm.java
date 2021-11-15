@@ -68,7 +68,7 @@ public class VXMLForm {
 		}
 		
 		sb
-			.append(t).append("<field name=\"").append(id).append("\">").append(nl)
+			.append(t).append("<field name=\"").append(convertId(id)).append("\">").append(nl)
 			.append(t).append(t).append("<prompt>").append(nl)
 			.append(t).append(t).append(t).append(prePrompt.getText()).append(" <enumerate/>").append(nl)
 			.append(t).append(t).append("</prompt>").append(nl);
@@ -77,7 +77,7 @@ public class VXMLForm {
 		}
 		sb.append(t).append(t).append("<filled>").append(nl);
 		for (Entry<String, List<VXMLAction>> e : options.entrySet()) {
-			sb.append(t).append(t).append(t).append("<if cond=\"").append(id).append("=='").append(e.getKey()).append("'\">").append(nl);
+			sb.append(t).append(t).append(t).append("<if cond=\"").append(convertId(id)).append("=='").append(e.getKey()).append("'\">").append(nl);
 			for (VXMLAction action : e.getValue()) {
 				for(String line : action.toString(prettyPrint).split(System.lineSeparator())) {
 					sb.append(t).append(t).append(t).append(t).append(line).append(nl);
@@ -105,6 +105,10 @@ public class VXMLForm {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public static String convertId(int id) {
+		return Integer.toString(id, 2).replace('0', 'l').replace('1', 'I');
 	}
 	
 }
