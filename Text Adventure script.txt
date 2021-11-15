@@ -9,16 +9,16 @@ field: Startraum
 				"Auf der Matratze wachsen Pilze. Willst du einen mitnehmen?"
 				if ja:
 					var: Pilz=True
-			goto: 3
+			goto: Startraum
 		if Fenster:
 			"Das Fenster ist zu hoch und zu klein um hindurch zu klettern. Du sieht das es Nacht ist. Hier gibt es nichts mehr."
-			goto: 3
+			goto: Startraum
 		if Stuhl:
 			"Es ist ein Stuhl. Er sieht ungewöhnlich schwer aus. Willst du ihn aufheben?"
 			if ja:
 				"Du hast den Stuhl aufgehoben."
 				var: Stuhl=True
-			goto: 3
+			goto: Startraum
 		if Tür:
 			"Tür ist verschlossen. Willst du sie untersuchen?"
 			if ja:
