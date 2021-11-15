@@ -15,7 +15,7 @@ public class Assign extends VXMLAction {
 	@Override
 	public String toString(boolean prettyPrint) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<assign name\"").append(name).append("\" expr=\"").append(expr).append("\"/>");
+		sb.append("<assign name=\"").append(name).append("\" expr=\"").append(expr).append("\"/>");
 		return sb.toString();
 	}
 	
