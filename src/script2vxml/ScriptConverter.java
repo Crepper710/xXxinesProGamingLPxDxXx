@@ -1,7 +1,6 @@
 package script2vxml;
 
 import java.io.File;
-import java.io.ObjectInputStream.GetField;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -234,7 +233,7 @@ public class ScriptConverter {
 				forms.add(toForm(temp_s2, temp_s1, temp_s1, forms, varNames));
 			}
 		}
-		return new VXMLDocument(preActions, forms, firstID);
+		return new VXMLDocument(preActions, forms, varNames.stream().collect(Collectors.toList()), firstID);
 	}
 	
 	public static int countIfTree(List<Action.Context> actions) {
@@ -270,6 +269,7 @@ public class ScriptConverter {
 			temp_o2.add(toAction(a, id, allForms, varNames));
 		}
 		Map<String, List<VXMLAction>> options = new HashMap<>();
+		int counter = 0;
 		for (Entry<String, List<Action.Context>> e : ((Map<String, List<Action.Context>>) actions.get(index).getContext()).entrySet()) {
 			int i = countIfTree(e.getValue());
 			List<VXMLAction> temp = new ArrayList<>();
@@ -278,7 +278,7 @@ public class ScriptConverter {
 					temp.add(toAction(a, id, allForms, varNames));
 				}
 			} else if (i == 1) {
-				String subId = parentId + "_" + getUUID();
+				String subId = parentId + "_s" + (++counter) + "_" + getUUID();
 				allForms.add(toForm(e.getValue(), subId, id, allForms, varNames));
 				temp.add(new Goto(subId));
 			} else {
@@ -299,6 +299,7 @@ public class ScriptConverter {
 			return new Goto("end");
 		case VAR:
 			String[] var = ((String)action.getContext()).split("=");
+			varNames.add(var[0]);
 			return new Assign(var[0], var[1]);
 		case IF:
 			Object[] objs = (Object[]) action.getContext();
@@ -311,7 +312,7 @@ public class ScriptConverter {
 					temp.add(toAction(a, parentId, allForms, varNames));
 				}
 			} else if (i == 1) {
-				String subId = parentId + "_" + getUUID();
+				String subId = parentId + "_s_" + getUUID();
 				allForms.add(toForm(actions, subId, parentId, allForms, varNames));
 				temp.add(new Goto(subId));
 			} else {
