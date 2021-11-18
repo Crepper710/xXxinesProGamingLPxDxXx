@@ -8,7 +8,7 @@ import script2vxml.actions.Prompt;
 
 public class VXMLForm {
 	
-	public static String DEFAULT_PRE_PROMPT = "Wähle";
+	public static String DEFAULT_PRE_PROMPT = "WÃ¤hle";
 	
 	private final String name;
 	private final Map<String, List<VXMLAction>> options;
@@ -77,7 +77,7 @@ public class VXMLForm {
 		}
 		sb.append(t).append(t).append("<filled>").append(nl);
 		for (Entry<String, List<VXMLAction>> e : options.entrySet()) {
-			sb.append(t).append(t).append(t).append("<if cond=\"").append(convertId(id)).append("=='").append(e.getKey()).append("'\">").append(nl);
+			sb.append(t).append(t).append(t).append("<if cond=\"").append(e.getKey().replace("$id$", convertId(id))).append("'\">").append(nl);
 			for (VXMLAction action : e.getValue()) {
 				for(String line : action.toString(prettyPrint).split(System.lineSeparator())) {
 					sb.append(t).append(t).append(t).append(t).append(line).append(nl);
