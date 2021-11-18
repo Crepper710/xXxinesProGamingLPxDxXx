@@ -1,44 +1,51 @@
-Schlüssel_Anzahl=0
-Schalter1="oberen"
-Schalter2="oberen"
-Schalter3="oberen"
-
+var: Schlüssel_Anzahl=0
+var: Schalter1='oberen'
+var: Schalter2='oberen'
+var: Schalter3='oberen'
 "Du erwachst in einem dunklen Raum und weißt nicht wo du bist. Du siehst dich um"
 field: Startraum
-	"Es ist ein kleiner Raum mit einem schäbigen Bett, einem kleinen vergitterten Fenster, einem Stuhl und einer Tür. Willst du etwas untersuchen?"
-	if ja:
-		"Was willst du untersuchen?"
-		if Bett:
-			"Es ist ein kleines und sehr altes Bett. Das Kissen und die Decke sind löchrig und stinken. Willst du das Bett weiter untersuchen"
-			if ja:
-				"Auf der Matratze wachsen Pilze. Willst du einen mitnehmen?"
-				if ja:
-					var: Pilz=True
+	"Was willst du untersuchen?"
+	option $Bett:
+		"Es ist ein kleines und sehr altes Bett. Das Kissen und die Decke sind löchrig und stinken. Willst du das Bett weiter untersuchen"
+		option $ja:
+			"Auf der Matratze wachsen Pilze. Willst du einen mitnehmen?"
+			option $ja:
+			
+				var: Pilz='True'
+	option $Fenster:
+		"Das Fenster ist zu hoch und zu klein um hindurch zu klettern. Du sieht das es Nacht ist. Hier gibt es nichts mehr."
+	option $Stuhl:
+		"Es ist ein Stuhl. Er sieht ungewöhnlich schwer aus. Willst du ihn aufheben?"
+		option $ja:
+			"Du hast den Stuhl aufgehoben."
+			var: Stuhl='True'
+		goto: Startraum
+	option $Tür:
+		"Tür ist verschlossen. Willst du sie untersuchen?"
+		if Tür1=='True':
+			"Du kannst diesen Raum verlassen. Willst du ihn verlassen?"
+			option $ja:
+				"Du verlässt den Raum"
+				goto: Gang_1-2
+			option $nein:
+				goto: Startraum
 			goto: Startraum
-		if Fenster:
-			"Das Fenster ist zu hoch und zu klein um hindurch zu klettern. Du sieht das es Nacht ist. Hier gibt es nichts mehr."
+		option $ja
+			"Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss. Etwas schweres könnte die Tür zerstören"
+		option $ja&&Stuhl=='True':
+			"Willst du mit dem Stuhl darauf einschlagen?"
+			option $ja:
+				"Die Tür und der Stuhl zerbersten gleichzeitig in einem sehr lauten Kracher. Du kannst nun das Zimmer verlassen."
+				var: Tür1='True'
+				var: Stuhl='False'
+		if Tür1=='True':
+			"Du kannst diesen Raum verlassen. Willst du ihn verlassen?"
+			option $ja:
+				"Du verlässt den Raum"
+				goto: Gang_1-2
+			option $nein:
+				goto: Startraum
 			goto: Startraum
-		if Stuhl:
-			"Es ist ein Stuhl. Er sieht ungewöhnlich schwer aus. Willst du ihn aufheben?"
-			if ja:
-				"Du hast den Stuhl aufgehoben."
-				var: Stuhl=True
-			goto: Startraum
-		if Tür:
-			"Tür ist verschlossen. Willst du sie untersuchen?"
-			if ja:
-				"Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss. Etwas schweres könnte die Tür zerstören"
-				if (Stuhl=True):
-					"Willst du mit dem Stuhl darauf einschlagen?"
-					if ja:
-						"Die Tür und der Stuhl zerbersten gleichzeitig in einem sehr lauten Kracher. Du kannst nun das Zimmer verlassen."
-						var: Tür1=True
-						var: Stuhl=False
-			if (Tür1=True):
-				"Du kannst diesen Raum verlassen. Willst du ihn verlassen?"
-				if ja:
-					"Du verlässt den Raum"
-					goto: Gang_1-2
 field: Gang_1-2
 	"Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden und zwei Türen."
 	if (Gang_1-2_betreten=True):
