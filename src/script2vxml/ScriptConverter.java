@@ -8,12 +8,12 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import script2vxml.actions.Assign;
@@ -35,6 +35,7 @@ public class ScriptConverter {
 	}
 	
 	//testing only
+	@SuppressWarnings("rawtypes")
 	public static void print(Object obj) {
 		if (obj instanceof Action.Context) {
 			System.out.println(((Action.Context)obj).getAction());
@@ -75,7 +76,7 @@ public class ScriptConverter {
 		throw new IllegalArgumentException("failed to read script");
 	}
 	
-	public static Action.Context readStatment(String[] lines, HashMap<String, List<Action.Context>> currIfTree, int currTab, ObjectInteger currLine) throws Exception {
+	public static Action.Context readStatment(String[] lines, TreeMap<String, List<Action.Context>> currIfTree, int currTab, ObjectInteger currLine) throws Exception {
 		if (currLine.get() < lines.length) {
 			String nextLine = lines[currLine.get()];
 			{
@@ -152,12 +153,18 @@ public class ScriptConverter {
 				}
 				currLine.set(currLine.get() + 1);
 				List<Action.Context> actions = readNextBlock(lines, currTab + 1, currLine);
-				if (nextLine.startsWith("(") && nextLine.endsWith(")")) {
-					action = Action.IF.context(new Object[] {nextLine.substring(1, nextLine.length() - 1), actions});
-				} else {
-					currIfTree.put(nextLine, actions);
-					action = Action.IF_PLACEHOLDER.context(null);
+				action = Action.IF.context(new Object[] {nextLine, actions});
+			}break;
+			case 'o':{
+				if (!(nextLine.startsWith("option ") && nextLine.endsWith(":"))) {
+					System.err.println((currLine.get() + 1) + ": \"" + nextLine + "\" unknown command");
+					throw new IllegalArgumentException();
 				}
+				nextLine = nextLine.substring(6, nextLine.length() - 1).trim();
+				currLine.set(currLine.get() + 1);
+				List<Action.Context> actions = readNextBlock(lines, currTab + 1, currLine);
+				currIfTree.put(nextLine, actions);
+				action = Action.OPTION_PLACEHOLDER.context(null);
 			}break;
 			case 'f':{
 				if (!nextLine.startsWith("field: ")) {
@@ -184,7 +191,7 @@ public class ScriptConverter {
 	
 	public static List<Action.Context> readNextBlock(String[] lines, int currTab, ObjectInteger currLine) throws Exception {
 		List<Action.Context> result = new ArrayList<>();
-		HashMap<String, List<Action.Context>> currIfTree = new HashMap<>();
+		TreeMap<String, List<Action.Context>> currIfTree = new TreeMap<>();
 		while(currLine.get() < lines.length) {
 			String tabPattern = Arrays.asList(new String[currTab]).stream().map(s -> "\t").collect(Collectors.joining());
 			String nextLine = lines[currLine.get()];
@@ -192,16 +199,16 @@ public class ScriptConverter {
 				break;
 			}
 			Action.Context action = readStatment(lines, currIfTree, currTab, currLine);
-			if (action.getAction() != Action.IF_PLACEHOLDER) {
+			if (action.getAction() != Action.OPTION_PLACEHOLDER) {
 				if (currIfTree.size() != 0) {
-					action = Action.IF_TREE.context(currIfTree);
-					currIfTree = new HashMap<>();
+					action = Action.OPTION_TREE.context(currIfTree);
+					currIfTree = new TreeMap<>();
 				}
 				result.add(action);
 			}
 		}
 		if (currIfTree.size() != 0) {
-			result.add(Action.IF_TREE.context(currIfTree));
+			result.add(Action.OPTION_TREE.context(currIfTree));
 		}
 		return result;
 	}
@@ -226,6 +233,7 @@ public class ScriptConverter {
 				}
 				Object[] temp_a = (Object[])action.getContext();
 				String temp_s1 = (String) temp_a[0];
+				@SuppressWarnings("unchecked")
 				List<Action.Context> temp_s2 = (List<Action.Context>) temp_a[1];
 				if (firstID.isEmpty()) {
 					firstID = temp_s1;
@@ -239,7 +247,7 @@ public class ScriptConverter {
 	public static int countIfTree(List<Action.Context> actions) {
 		int result = 0;
 		for (Action.Context action : actions) {
-			if (action.getAction() == Action.IF_TREE) {
+			if (action.getAction() == Action.OPTION_TREE) {
 				result++;
 			}
 		}
@@ -248,13 +256,14 @@ public class ScriptConverter {
 	
 	public static int indexOfIfTree(List<Action.Context> actions) {
 		for (int i = 0; i < actions.size(); i++) {
-			if (actions.get(i).getAction() == Action.IF_TREE) {
+			if (actions.get(i).getAction() == Action.OPTION_TREE) {
 				return i;
 			}
 		}
 		throw new IllegalArgumentException("contains no if tree");
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static VXMLForm toForm(List<Action.Context> actions, String id, String parentId, List<VXMLForm> allForms, Set<String> varNames) {
 		if (countIfTree(actions) != 1) {
 			throw new IllegalArgumentException("it is no form");
@@ -268,7 +277,7 @@ public class ScriptConverter {
 		for (Action.Context a : actions.subList(index + 1, actions.size())) {
 			temp_o2.add(toAction(a, id, allForms, varNames));
 		}
-		Map<String, List<VXMLAction>> options = new HashMap<>();
+		Map<String, List<VXMLAction>> options = new TreeMap<>();
 		int counter = 0;
 		for (Entry<String, List<Action.Context>> e : ((Map<String, List<Action.Context>>) actions.get(index).getContext()).entrySet()) {
 			int i = countIfTree(e.getValue());
@@ -289,6 +298,26 @@ public class ScriptConverter {
 		return new VXMLForm(id, options, temp_o1, parentId, temp_o2);
 	}
 	
+	public static String preProcessOptionExpression(String expr) {
+		StringBuilder sb = new StringBuilder();
+		StringBuilder currentOption = new StringBuilder();
+		boolean passThroughMode = true;
+		for (char c : expr.toCharArray()) {
+			if (c == '$') {
+				if (!passThroughMode) {
+					sb.append("$id$=='").append(currentOption.toString()).append("'");
+					currentOption = new StringBuilder();
+				}
+				passThroughMode = !passThroughMode;
+				continue;
+			}
+			if (!passThroughMode) {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
+	
 	public static VXMLAction toAction(Action.Context action, String parentId, List<VXMLForm> allForms, Set<String> varNames) {
 		switch (action.getAction()) {
 		case GOTO:
@@ -304,7 +333,7 @@ public class ScriptConverter {
 		case IF:
 			Object[] objs = (Object[]) action.getContext();
 			String condition = (String) objs[0];
-			List<Action.Context> actions = (List<Action.Context>) objs[1];
+			@SuppressWarnings("unchecked") List<Action.Context> actions = (List<Action.Context>) objs[1];
 			int i = countIfTree(actions);
 			List<VXMLAction> temp = new ArrayList<>();
 			if (i == 0) {
@@ -353,9 +382,9 @@ public class ScriptConverter {
 		PRINT,
 		END,
 		VAR,
-		IF_TREE,
+		OPTION_TREE,
 		FIELD,
-		IF_PLACEHOLDER,
+		OPTION_PLACEHOLDER,
 		IF;
 		
 		public Context context(Object context) {
