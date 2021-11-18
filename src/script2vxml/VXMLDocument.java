@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class VXMLDocument {
+	
+	public static String DEFAULT_VAR_VALUE = "False";
 
 	private final List<VXMLAction> preActions;
 	private final List<VXMLForm> forms;
@@ -33,6 +35,7 @@ public class VXMLDocument {
 		sb.append("<vxml>").append(nl);
 		for (String varName : varNames) {
 			sb.append(t).append("<var name=\"").append(varName).append("\"/>").append(nl);
+			sb.append(t).append("<assign name=\"").append(varName).append("\" expr=\"").append(DEFAULT_VAR_VALUE).append("\"/>").append(nl);
 		}
 		for (VXMLAction action : preActions) {
 			for(String line : action.toString(prettyPrint).split(System.lineSeparator())) {
@@ -52,7 +55,7 @@ public class VXMLDocument {
 			.append(t).append(t).append(nl)
 			.append(t).append("</form>").append(nl)
 			.append("</vxml>");
-		return sb.toString();
+		return sb.toString().replace("&", "&amp;");
 	}
 	
 }
