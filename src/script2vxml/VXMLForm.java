@@ -11,14 +11,16 @@ public class VXMLForm {
 	public static String DEFAULT_PRE_PROMPT = "Wähle";
 	
 	private final String name;
-	private final Map<String, List<VXMLAction>> options;
+	private final List<String> options;
+	private final Map<String, List<VXMLAction>> ifs;
 	private final List<VXMLAction> preOption;
 	private final String safeStateID; // just for failsafe if the field is failing so ines doesnt crash, or something else
 	private final List<VXMLAction> postOption;
 	
-	public VXMLForm(String name, Map<String, List<VXMLAction>> options, List<VXMLAction> preOption, String safeStateID, List<VXMLAction> postOption) {
+	public VXMLForm(String name, List<String> options, Map<String, List<VXMLAction>> ifs, List<VXMLAction> preOption, String safeStateID, List<VXMLAction> postOption) {
 		this.name = name;
 		this.options = options;
+		this.ifs = ifs;
 		this.preOption = preOption;
 		this.safeStateID = safeStateID;
 		this.postOption = postOption;
@@ -72,12 +74,12 @@ public class VXMLForm {
 			.append(t).append(t).append("<prompt>").append(nl)
 			.append(t).append(t).append(t).append(prePrompt.getText()).append(" <enumerate/>").append(nl)
 			.append(t).append(t).append("</prompt>").append(nl);
-		for (String s : options.keySet()) {
+		for (String s : options) {
 			sb.append(t).append(t).append("<option value=\"").append(s).append("\">").append(s).append("</option>").append(nl);
 		}
 		sb.append(t).append(t).append("<filled>").append(nl);
-		for (Entry<String, List<VXMLAction>> e : options.entrySet()) {
-			sb.append(t).append(t).append(t).append("<if cond=\"").append(e.getKey().replace("$id$", convertId(id))).append("'\">").append(nl);
+		for (Entry<String, List<VXMLAction>> e : ifs.entrySet()) {
+			sb.append(t).append(t).append(t).append("<if cond=\"").append(e.getKey().replace("$id$", convertId(id))).append("\">").append(nl);
 			for (VXMLAction action : e.getValue()) {
 				for(String line : action.toString(prettyPrint).split(System.lineSeparator())) {
 					sb.append(t).append(t).append(t).append(t).append(line).append(nl);
