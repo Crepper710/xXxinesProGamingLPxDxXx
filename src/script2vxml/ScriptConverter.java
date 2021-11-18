@@ -153,7 +153,7 @@ public class ScriptConverter {
 				}
 				currLine.set(currLine.get() + 1);
 				List<Action.Context> actions = readNextBlock(lines, currTab + 1, currLine);
-				action = Action.IF.context(new Object[] {nextLine, actions});
+				action = Action.IF.context(new Object[] {nextLine.replace('"', '\''), actions});
 			}break;
 			case 'o':{
 				if (!(nextLine.startsWith("option ") && nextLine.endsWith(":"))) {
@@ -163,7 +163,7 @@ public class ScriptConverter {
 				nextLine = nextLine.substring(6, nextLine.length() - 1).trim();
 				currLine.set(currLine.get() + 1);
 				List<Action.Context> actions = readNextBlock(lines, currTab + 1, currLine);
-				currIfTree.put(nextLine, actions);
+				currIfTree.put(nextLine.replace('"', '\''), actions);
 				action = Action.OPTION_PLACEHOLDER.context(null);
 			}break;
 			case 'f':{
