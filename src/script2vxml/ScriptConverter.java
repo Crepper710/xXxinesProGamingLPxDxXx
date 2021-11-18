@@ -213,6 +213,31 @@ public class ScriptConverter {
 		return result;
 	}
 	
+	public static String preProcessOptionExpression(String expr, List<String> options) {
+		StringBuilder sb = new StringBuilder();
+		StringBuilder currentOption = new StringBuilder();
+		boolean passThroughMode = false;
+		for (char c : expr.toCharArray()) {
+			if (c == '$') {
+				if (passThroughMode) {
+					sb.append("$id$=='").append(currentOption.toString()).append("'");
+					if (!options.contains(currentOption.toString())) {
+						options.add(currentOption.toString());
+					}
+					currentOption = new StringBuilder();
+				}
+				passThroughMode = !passThroughMode;
+				continue;
+			}
+			if (!passThroughMode) {
+				sb.append(c);
+			} else {
+				currentOption.append(c);
+			}
+		}
+		return sb.toString();
+	}
+	
 	public static VXMLDocument convert(List<Action.Context> actions) {
 		boolean preMode = true;
 		List<VXMLAction> preActions = new ArrayList<>();
@@ -277,7 +302,8 @@ public class ScriptConverter {
 		for (Action.Context a : actions.subList(index + 1, actions.size())) {
 			temp_o2.add(toAction(a, id, allForms, varNames));
 		}
-		Map<String, List<VXMLAction>> options = new TreeMap<>();
+		List<String> options = new ArrayList<>();
+		Map<String, List<VXMLAction>> ifs = new TreeMap<>();
 		int counter = 0;
 		for (Entry<String, List<Action.Context>> e : ((Map<String, List<Action.Context>>) actions.get(index).getContext()).entrySet()) {
 			int i = countIfTree(e.getValue());
@@ -293,29 +319,9 @@ public class ScriptConverter {
 			} else {
 				new IllegalArgumentException("field is no form");
 			}
-			options.put(e.getKey(), temp);
+			ifs.put(preProcessOptionExpression(e.getKey(), options), temp);
 		}
-		return new VXMLForm(id, options, temp_o1, parentId, temp_o2);
-	}
-	
-	public static String preProcessOptionExpression(String expr) {
-		StringBuilder sb = new StringBuilder();
-		StringBuilder currentOption = new StringBuilder();
-		boolean passThroughMode = true;
-		for (char c : expr.toCharArray()) {
-			if (c == '$') {
-				if (!passThroughMode) {
-					sb.append("$id$=='").append(currentOption.toString()).append("'");
-					currentOption = new StringBuilder();
-				}
-				passThroughMode = !passThroughMode;
-				continue;
-			}
-			if (!passThroughMode) {
-				sb.append(c);
-			}
-		}
-		return sb.toString();
+		return new VXMLForm(id, options, ifs, temp_o1, parentId, temp_o2);
 	}
 	
 	public static VXMLAction toAction(Action.Context action, String parentId, List<VXMLForm> allForms, Set<String> varNames) {
