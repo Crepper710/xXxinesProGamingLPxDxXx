@@ -57,7 +57,7 @@ field: Portalraum
 	if Tor:
 		"Das Tor besteht  aus einem dir unbekanntem Material und ist bedeckt mit unbekannten Symbolen und drei Schlössern. Du spürst, dass es eine mystische Präsenz ausstrahlt."
 		"Du besitzt <value expr="Schlüssel_Anzahl"/> von drei Schlüsseln."
-		if Schlüssel_Anzahl=3:
+		if Schlüssel_Anzahl==3:
 			"Du hast alle drei Schlüssel gefunden und kannst das Tor öffnen. Willst du das Tor öffen?"
 			if ja:
 				"Du öffnest das Tor. wärend sich das Enorme Tor öffnet spürt du eine enorme Hitze, welche aus dem Tor entweicht. Auf einmal hörst du eine dunkle Stimme aus dem Tor rufen. Sterblicher, du hast das Tor zur Hölle geöffnet. Dank dir können wir endlich diese Welt einnehmen. Das Tor öffnet sich. Eine riesige Hand greift nach dir. Es wird dunkel."
@@ -222,6 +222,7 @@ field: Gang_3-5:
 		"Die erste Tür führt zur Kanalisation. Die zweite Tür hast du noch nicht betreten."
 	"Durch welche Tür willst du gehen?"
 	if erste:
+		"Du gehst durch die erste Tür."
 		goto: Kanalisation
 	if zweite:
 		if Tür8=="False":
@@ -240,4 +241,61 @@ field: Gang_3-5:
 			"Du gehst durch die zweite Tür."
 			var: Gang_3-5_betreten=True
 			goto: Kaserne
-	
+field: Kaserne:
+	"Du betrittst einen Raum mit mehreren Betten und drei Türen. Die erste Tür führt zur Kanalisation. Über der zweiten Tür hängt ein goldenes Schild mit unbekannter Schrift.  Über der dritten Tür hängt ein silbernes Schild mit unbekannter Schrift. Wohin willst du gehen?"
+	if erste:
+		"Du gehst durch die erste Tür."
+		goto: Gang_3-5
+	if zweite:
+		"Du gehst durch die zweite Tür."
+		goto: Raum_Anführer
+	if dritte:
+		"Du gehst durch die dritte Tür."
+		goto: Raum_Vize
+field: Raum_Anführer:
+	"Es ist ein sehr enger Raum. In dem Raum befindet sich ein Bett, ein Schreibtisch und die Tür durch welche du reingekommen bist. Wohin willst du gehen"
+	if Bett:
+		"Es ist ein sehr ordentlich gedecktes Bett. Du findest nichts aussergewöhnliches und gehst zurück in den Raum."
+		goto: Raum_Anführer
+	if Schreibtisch:
+		"Die Oberfläche des Schreibtisches ist komplett leer. Der Schreibtisch hat eine Schublade. Willst du sie öffnen?"
+		option $ja$:
+			if Schreibtisch_geöffnet=="False":
+				"Die Schublade ist verschlossen."
+				if Dolch=="True":
+					"Du hast einen Dolch. Willst du sie Damit aufbreichen?"
+						option $ja$:
+							"Du brichst die Schublade auf. Dir wird schwarz von den Augen und du fällst in Ohnmacht. Du wachst einige Zeit später auf und stehst auf. Du denkst dir, dass du dich überanstregt hast."
+							var: Schreibtisch_geöffnet="True"
+							goto: Raum_Anführer
+						option $nein$:
+							"Du lässt die Schublade sein und gehst zurück in den Raum."
+							goto: Raum_Anführer
+				if Dolch=="False":
+				
+			if Schreibtisch_geöffnet=="True":
+				"In der Schublade befindet sich ein Buch. Das Buch hat einen Umschlag aus unbekanntem Leder. In das Leder sind unbekannte Symbole eingraviert. Du öffnest das Buch und versuchst die Schrift zu lesen, aber verstehst die Symbole nicht. Du versuchst es nochmal. In diesem Durchlauf kannst du die Schrift teilweise lesen. Du versuchst es ein drittes Mal. Dieses Mal verstehst du den Text Vollständig. In dem Text steht, spalte die Haut für den Dritten. Du verstehst dieses Rätzel in zwei verschiedenen Weisen. Die erste ist, dass du dir mit dem Dolch die Haut schneiden musst. Die zweite ist, dass du den Umschlag des Buches schneiden musst. Welche Möglichkeit wählst du?"
+				option $erste$:
+					"Du schneidest deine Haut auf, bemerkst aber nichts abnormales. Du vergrößerst die Wunde, bemerkst dieses Mal auch nichts abnormales. Du entscheidest dich die Wunde noch weiter zu vergrößern, fällst aber auf den Boden. Du liegst in einer Warmen Pfütze und alles um dich rum wird dunkel."
+					end
+				option $zweite$:
+					"Du schneidest den Umschlag auf. Hinter diesem befindet sich ein Schlüssel. Du nimmst den Schlüssel auf, schließt die Schublade und gehst zurück in den Raum."
+					Schlüssel_Anzahl=Schlüssel_Anzahl+1
+					goto: Raum_Anführer
+	if Tür:
+		"Du gehst zurück in den großen Raum mit Betten."
+		goto: Kaserne
+field: Raum_Vize:
+	"Es ist ein sehr enger Raum. In dem Raum befindet sich ein Bett, ein Schreibtisch und die Tür durch welche du reingekommen bist. Wohin willst du gehen"
+	if Bett:
+		"Es ist ein sehr unordentlich gedecktes Bett. Du findest nichts aussergewöhnliches außer dem Gestank und gehst zurück in den Raum."
+		goto: Raum_Vize
+	if Schreibtisch:
+		"Auf dem Schreibtisch befindet sich eine einzige antike Münze. willst du sie aufheben?"
+		option $ja$:
+			"Du hebst die Münze auf und gehst zurück in den Raum."
+			Münze="True"
+	if Tür:
+		"Du gehst zurück in den großen Raum mit Betten."
+		goto: Kaserne
+		
