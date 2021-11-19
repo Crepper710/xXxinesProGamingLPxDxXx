@@ -80,6 +80,12 @@ public class ScriptConverter {
 		if (currLine.get() < lines.length) {
 			String nextLine = lines[currLine.get()];
 			{
+				int commentIndex = nextLine.indexOf("//");
+				if (commentIndex != -1) {
+					nextLine = nextLine.substring(0, commentIndex);
+				}
+			}
+			{
 				String tabPattern = Arrays.asList(new String[currTab]).stream().map(s -> "\t").collect(Collectors.joining());
 				if (!nextLine.startsWith(tabPattern)) {
 					System.err.println((currLine.get() + 1) + ": \"" + nextLine + "\" invalid tab length");
@@ -291,7 +297,7 @@ public class ScriptConverter {
 	@SuppressWarnings("unchecked")
 	public static VXMLForm toForm(List<Action.Context> actions, String id, String parentId, List<VXMLForm> allForms, Set<String> varNames) {
 		if (countIfTree(actions) != 1) {
-			throw new IllegalArgumentException("it is no form");
+			throw new IllegalArgumentException(id + " is no form (" + countIfTree(actions) + ")");
 		}
 		int index = indexOfIfTree(actions);
 		List<VXMLAction> temp_o1 = new ArrayList<>();
