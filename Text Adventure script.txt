@@ -143,7 +143,7 @@ field: Kerker
 	if Leiche:
 		"Es ist eine sehr alte schon ausgetrocknete Leiche."
 		if (Dolch_genommen="False"):
-			Du entdeckst einen Doch in ihrem Brustkorb. Willst du den Dolch aufheben?"
+			"Du entdeckst einen Doch in ihrem Brustkorb. Willst du den Dolch aufheben?"
 			if ja:
 				"Du ziehst den Doch aus der Leiche raus. Dabei fällt dir ein Zettel in der Hand der Leiche auf. Du hebst beide auf."
 				var: Dolch=True
@@ -160,27 +160,27 @@ field: Kerker
 	if Fackeln:
 		"Bei genauerem Ansehen sind es keine normalen Fackeln, sondern schalter. Der erste Schalter ist in der <value expr="Schalter1"/> Position. Der zweite Schalter ist in der <value expr="Schalter2"/> Position. Der dritte Schalter ist in der <value expr="Schalter3"/> Position. Welchen Schalter willst du umschalten?"
 		if ersten:
-			if (Schalter1=="oberen")
+			if Schalter1=="oberen":
 				"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
 				var: Schalter1="untere"
 				goto: Kerker
-			if (Schlater1=="untere"):
+			if Schlater1=="untere":
 				"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
 				goto: Kerker
 		if zweiten:
-			if (Schalter2=="oberen")
+			if Schalter2=="oberen":
 				"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
 				var: Schalter1="untere"
 				goto: Kerker
-			if (Schlater2=="untere"):
+			if Schlater2=="untere":
 				"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
 				goto: Kerker
 		if dritten:
-			if (Schalter3=="oberen")
+			if Schalter3=="oberen":
 				"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
 				var: Schalter1="untere"
 				goto: Kerker
-			if (Schlater3=="untere"):
+			if Schlater3=="untere":
 				"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
 				goto: Kerker
 	if Tür:
