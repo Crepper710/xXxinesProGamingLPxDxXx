@@ -3,6 +3,8 @@ package script2vxml;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import script2vxml.actions.Assign;
+
 public class VXMLDocument {
 	
 	public static String DEFAULT_VAR_VALUE = "False";
@@ -35,9 +37,18 @@ public class VXMLDocument {
 		sb.append("<vxml>").append(nl);
 		for (String varName : varNames) {
 			sb.append(t).append("<var name=\"").append(varName).append("\"/>").append(nl);
-			sb.append(t).append("<assign name=\"").append(varName).append("\" expr=\"").append(DEFAULT_VAR_VALUE).append("\"/>").append(nl);
+			if (preActions.stream().filter(action -> action instanceof Assign).map(action -> (Assign) action).anyMatch(action -> action.getName().equals(varName))) {
+				sb.append(t).append("<assign name=\"").append(varName).append("\" expr=\"").append(preActions.stream().filter(action -> action instanceof Assign).map(action -> (Assign) action).filter(action -> action.getName().equals(varName)).findAny().orElse(new Assign("", DEFAULT_VAR_VALUE)).getExpr()).append("\"/>").append(nl);
+			} else {
+				sb.append(t).append("<assign name=\"").append(varName).append("\" expr=\"").append(DEFAULT_VAR_VALUE).append("\"/>").append(nl);
+			}
 		}
 		for (VXMLAction action : preActions) {
+			if (action instanceof Assign) {
+				if (varNames.contains(((Assign) action).getName())) {
+					continue;
+				}
+			}
 			for(String line : action.toString(prettyPrint).split(System.lineSeparator())) {
 				sb.append(t).append(line).append(nl);
 			}

@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -96,7 +95,7 @@ public class ScriptConverter {
 					throw new IllegalArgumentException();
 				}
 			}
-			nextLine = nextLine.substring(currTab);
+			nextLine = nextLine.substring(currTab).trim();
 			char firstChar = nextLine.charAt(0);
 			Action.Context action = null;
 			switch (firstChar) {
@@ -255,7 +254,7 @@ public class ScriptConverter {
 				if (action.getAction() == Action.FIELD) {
 					preMode = false;
 				} else {
-					preActions.add(toAction(action, "start", forms, varNames));
+					preActions.add(toAction(action, "start", "start", forms, varNames));
 				}
 			}
 			if (!preMode) {
@@ -269,7 +268,7 @@ public class ScriptConverter {
 				if (firstID.isEmpty()) {
 					firstID = temp_s1;
 				}
-				forms.add(toForm(temp_s2, temp_s1, temp_s1, forms, varNames));
+				forms.add(toForm(temp_s2, temp_s1, temp_s1, temp_s1, forms, varNames));
 			}
 		}
 		return new VXMLDocument(preActions, forms, varNames.stream().collect(Collectors.toList()), firstID);
@@ -295,7 +294,7 @@ public class ScriptConverter {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static VXMLForm toForm(List<Action.Context> actions, String id, String parentId, List<VXMLForm> allForms, Set<String> varNames) {
+	public static VXMLForm toForm(List<Action.Context> actions, String id, String parentId, String fieldId, List<VXMLForm> allForms, Set<String> varNames) {
 		if (countIfTree(actions) != 1) {
 			throw new IllegalArgumentException(id + " is no form (" + countIfTree(actions) + ")");
 		}
@@ -303,34 +302,35 @@ public class ScriptConverter {
 		List<VXMLAction> temp_o1 = new ArrayList<>();
 		List<VXMLAction> temp_o2 = new ArrayList<>();
 		for (Action.Context a : actions.subList(0, index)) {
-			temp_o1.add(toAction(a, id, allForms, varNames));
+			temp_o1.add(toAction(a, id, fieldId, allForms, varNames));
 		}
 		for (Action.Context a : actions.subList(index + 1, actions.size())) {
-			temp_o2.add(toAction(a, id, allForms, varNames));
+			temp_o2.add(toAction(a, id, fieldId, allForms, varNames));
 		}
 		List<String> options = new ArrayList<>();
 		Map<String, List<VXMLAction>> ifs = new TreeMap<>();
 		int counter = 0;
-		for (Entry<String, List<Action.Context>> e : ((Map<String, List<Action.Context>>) actions.get(index).getContext()).entrySet()) {
-			int i = countIfTree(e.getValue());
+		for (String key : ((TreeMap<String, List<Action.Context>>) actions.get(index).getContext()).navigableKeySet()) {
+			List<Action.Context> value = ((TreeMap<String, List<Action.Context>>) actions.get(index).getContext()).get(key);
+			int i = countIfTree(value);
 			List<VXMLAction> temp = new ArrayList<>();
 			if (i == 0) {
-				for (Action.Context a : e.getValue()) {
-					temp.add(toAction(a, id, allForms, varNames));
+				for (Action.Context a : value) {
+					temp.add(toAction(a, id, fieldId, allForms, varNames));
 				}
 			} else if (i == 1) {
 				String subId = parentId + "_s" + (++counter) + "_" + getUUID();
-				allForms.add(toForm(e.getValue(), subId, id, allForms, varNames));
+				allForms.add(toForm(value, subId, id, fieldId, allForms, varNames));
 				temp.add(new Goto(subId));
 			} else {
 				new IllegalArgumentException("field is no form");
 			}
-			ifs.put(preProcessOptionExpression(e.getKey(), options), temp);
+			ifs.put(preProcessOptionExpression(key, options), temp);
 		}
-		return new VXMLForm(id, options, ifs, temp_o1, parentId, temp_o2);
+		return new VXMLForm(id, options, ifs, temp_o1, fieldId, temp_o2);
 	}
 	
-	public static VXMLAction toAction(Action.Context action, String parentId, List<VXMLForm> allForms, Set<String> varNames) {
+	public static VXMLAction toAction(Action.Context action, String parentId, String fieldId, List<VXMLForm> allForms, Set<String> varNames) {
 		switch (action.getAction()) {
 		case GOTO:
 			return new Goto((String)action.getContext());
@@ -350,11 +350,11 @@ public class ScriptConverter {
 			List<VXMLAction> temp = new ArrayList<>();
 			if (i == 0) {
 				for (Action.Context a : actions) {
-					temp.add(toAction(a, parentId, allForms, varNames));
+					temp.add(toAction(a, parentId, fieldId, allForms, varNames));
 				}
 			} else if (i == 1) {
 				String subId = parentId + "_s_" + getUUID();
-				allForms.add(toForm(actions, subId, parentId, allForms, varNames));
+				allForms.add(toForm(actions, subId, parentId, fieldId, allForms, varNames));
 				temp.add(new Goto(subId));
 			} else {
 				new IllegalArgumentException("field is no form");
@@ -368,11 +368,7 @@ public class ScriptConverter {
 	private static int counter = 0;
 	
 	public static String getUUID() {
-		byte[] a = ByteBuffer.allocate(8).putLong(System.nanoTime() + (++counter)).array();
-		byte[] b = ByteBuffer.allocate(8).putLong(new SecureRandom().nextLong()).array();
-		for (int i = 0; i < b.length; i++) {
-			a[i] = (byte) (a[i] ^ b[i]);
-		}
+		byte[] a = ByteBuffer.allocate(4).putInt((++counter)).array();
 		return bytesToHex(a);
 	}
 	

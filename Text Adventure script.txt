@@ -1,29 +1,34 @@
 var: Schlüssel_Anzahl=0
-var: Schalter1='oberen'
-var: Schalter2='oberen'
-var: Schalter3='oberen'
-"Du erwachst in einem dunklen Raum und weißt nicht wo du bist. Du siehst dich um"
+var: Schalter1=oberen
+var: Schalter2=oberen
+var: Schalter3=oberen
 field: Startraum
 	"Es ist ein kleiner Raum mit einem schäbigen Bett, einem kleinen vergitterten Fenster, einem Stuhl und einer Tür. Was willst du untersuchen?"
 	option $Bett$:
 		"Es ist ein kleines und sehr altes Bett. Das Kissen und die Decke sind löchrig und stinken. Willst du das Bett weiter untersuchen"
-		option $ja$:
+		option $ja$&&Pilze_genommen=='False':
 			"Auf der Matratze wachsen Pilze. Willst du einen mitnehmen?"
 			option $ja$:
-				var: Pilz='True'
+				var: Pilz=True
+				var: Pilze_genommen==True
 			option $nein$:
 				goto: Startraum
+		option $ja$&&Pilze_genommen=='True':
+			"Hier gibt es nichts mehr zu sehen"
 		option $nein$:
 			goto: Startraum
 		goto: Startraum
 	option $Fenster$:
 		"Das Fenster ist zu hoch und zu klein um hindurch zu klettern. Du sieht das es Nacht ist. Hier gibt es nichts mehr."
 		goto: Startraum
+	option $Stuhl$&&Stuhl_aufgehoben=='True':
+		"Du hast den Stuhl schon aufgehoben"
 	option $Stuhl$:
 		"Es ist ein Stuhl. Er sieht ungewöhnlich schwer aus. Willst du ihn aufheben?"
 		option $ja$:
 			"Du hast den Stuhl aufgehoben."
-			var: Stuhl='True'
+			var: Stuhl=True
+			var: Stuhl_aufgehoben=True
 		option $nein$:
 			goto: Startraum
 		goto: Startraum
@@ -40,12 +45,12 @@ field: Startraum
 			"Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss. Etwas schweres könnte die Tür zerstören"
 		option $ja$&&Stuhl=='True':
 			"Willst du mit dem Stuhl darauf einschlagen?"
+			option $nein$:
+				goto: Startraum
 			option $ja$:
 				"Die Tür und der Stuhl zerbersten gleichzeitig in einem sehr lauten Kracher. Du kannst nun das Zimmer verlassen."
 				var: Tür1=True
 				var: Stuhl=False
-			option $nein$:
-				goto: Startraum
 		option $nein$:
 			goto: Startraum
 field: Gang_1_2
@@ -58,7 +63,7 @@ field: Gang_1_2
 	option $erste$:
 		goto: Startraum
 	option $zweite$:
-		var: Gang_1_2_betreten='True'
+		var: Gang_1_2_betreten=True
 		goto: Portalraum
 field: Portalraum
 	"Du betrittst einen großen Raum mit einer hohen Decke und retualistischen Dekorationen. Du erblickst ein Tor, welches sich in der Mitte des Raums befindet, einem Schrein mit einer Statue und drei Türen. Die erste Tür führt zu dem Raum, in welchem du aufgewacht bist. Über der zweiten Tür hängt ein Schild mit dem Schriftzug Kanalisation und Schlafbereich. Die dritte Tür ist vergittert mit einem rostigen Schloss. Wohin willst du gehen?"
@@ -80,7 +85,7 @@ field: Portalraum
 		option $ja$:
 			"Die Entität ist zufrieden mit deinem Opfer. Du fällst in Ohnmacht. Etwas später wachst du auf. Du liegst auf dem Boden und bemerkst etwas in deiner Hand. Es ist ein Schlüssel."
 			var: Schlüssel_Anzahl=Schlüssel_Anzahl+1
-			var: Blutopfer="True"
+			var: Blutopfer=True
 		option $nein$:
 			"Du gehtst zurück"
 			goto: Portalraum
@@ -166,14 +171,14 @@ field: Kerker
 			goto: Kerker
 		option $zweiten$&&Schalter2=='oberen':
 			"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
-			var: Schalter2='unteren'
+			var: Schalter2=unteren
 			goto: Kerker
 		option $zweiten$&&Schalter2=='unteren':
 			"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
 			goto: Kerker
 		option $dritten$&&Schalter3=='oberen':
 			"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
-			var: Schalter3='unteren'
+			var: Schalter3=unteren
 			goto: Kerker
 		option $dritten$&&Schalter3=='unteren':
 			"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
@@ -197,7 +202,7 @@ field: Kanalisation
 			end
 		option $Pilz geben$:
 			"Du gibst dem Goblin den Pilz. Er isst ihn. Der Goblin gibt dir etwas zurück. Es ist ein Schlüssel. Du nimmst ihn und gehst in den Raum zurück."
-			var: Pilz='False'
+			var: Pilz=False
 			var: Schlüssel_Anzahl=Schlüssel_Anzahl+1
 			goto: Kanalisation
 		option $gehen$:
@@ -214,12 +219,12 @@ field: Kanalisation
 		"Du hast einen Pilz. Willst du ihn dem Goblin geben?"
 		option $Ja$:
 			"Du gibst dem Goblin den Pilz. Er isst ihn. Der Goblin gibt dir etwas zurück. Es ist ein Schlüssel. Du nimmst ihn und gehst in den Raum zurück."
-			var: Pilz='False'
+			var: Pilz=False
 			var: Schlüssel_Anzahl=Schlüssel_Anzahl+1
 			goto: Kanalisation
 		option $Nein$:
 			"Du gehst in den Raum zurück"
-			goto Kanalisation
+			goto: Kanalisation
 	option $Goblin$:
 		"Beim Herantreten merkst du das der Goblin vor dir wegweicht. Er verhält sich unerwarted ruhig und gutmütig für einen Goblin. Du bemerkst, dass er abgemagert ist."
 	option $erste Tür$:
@@ -228,7 +233,7 @@ field: Kanalisation
 	option $zweite Tür$:
 		"Du gehst durch die zweite Tür"
 		goto: Gang_3_5
-field: Gang_3_5:
+field: Gang_3_5
 	"Du befindest dich in einem dunklen Gang. Du siehst einige Ausgebrannte Fackeln an den Wänden und zwei Türen."
 	if Gang_3_5_betreten==True:
 		"Die erste Tür führt zur Kanalisation. Die zweite Tür führt zur Kaserne."
@@ -243,7 +248,7 @@ field: Gang_3_5:
 		"Du kannst das Schloss mit dem Dolch öffnen. Willst du das Schloss öffnen."
 		option $ja$:
 			"Du brichst den Rahmen der Tür auf. Die Tür öffnet sich. Du trittst ein."
-			var: Tür8='True'
+			var: Tür8=True
 			goto: Kaserne
 		option $nein$:
 			"Du gehst von der Tür zurück"
@@ -256,7 +261,7 @@ field: Gang_3_5:
 		"Du gehst durch die zweite Tür."
 		var: Gang_3_5_betreten=True
 		goto: Kaserne
-field: Kaserne:
+field: Kaserne
 	"Du betrittst einen Raum mit mehreren Betten und drei Türen. Die erste Tür führt zur Kanalisation. Über der zweiten Tür hängt ein goldenes Schild mit unbekannter Schrift.  Über der dritten Tür hängt ein silbernes Schild mit unbekannter Schrift. Wohin willst du gehen?"
 	option $erste$:
 		"Du gehst durch die erste Tür."
@@ -267,7 +272,7 @@ field: Kaserne:
 	option $dritte$:
 		"Du gehst durch die dritte Tür."
 		goto: Raum_Vize
-field: Raum_Anführer:
+field: Raum_Anführer
 	"Es ist ein sehr enger Raum. In dem Raum befindet sich ein Bett, ein Schreibtisch und die Tür durch welche du reingekommen bist. Wohin willst du gehen"
 	option $Bett$:
 		"Es ist ein sehr ordentlich gedecktes Bett. Du findest nichts aussergewöhnliches und gehst zurück in den Raum."
@@ -279,7 +284,7 @@ field: Raum_Anführer:
 			"Du hast einen Dolch. Willst du sie Damit aufbreichen?"
 			option $ja$:
 				"Du brichst die Schublade auf. Dir wird schwarz von den Augen und du fällst in Ohnmacht. Du wachst einige Zeit später auf und stehst auf. Du denkst dir, dass du dich überanstregt hast."
-				var: Schreibtisch_geöffnet='True'
+				var: Schreibtisch_geöffnet=True
 				goto: Raum_Anführer
 			option $nein$:
 				"Du lässt die Schublade sein und gehst zurück in den Raum."
@@ -298,7 +303,7 @@ field: Raum_Anführer:
 	option $Tür$:
 		"Du gehst zurück in den großen Raum mit Betten."
 		goto: Kaserne
-field: Raum_Vize:
+field: Raum_Vize
 	"Es ist ein sehr enger Raum. In dem Raum befindet sich ein Bett, ein Schreibtisch und die Tür durch welche du reingekommen bist. Wohin willst du gehen"
 	option $Bett$:
 		"Es ist ein sehr unordentlich gedecktes Bett. Du findest nichts aussergewöhnliches außer dem Gestank und gehst zurück in den Raum."
@@ -307,7 +312,7 @@ field: Raum_Vize:
 		"Auf dem Schreibtisch befindet sich eine einzige antike Münze. willst du sie aufheben?"
 		option $ja$:
 			"Du hebst die Münze auf und gehst zurück in den Raum."
-			var: Münze='True'
+			var: Münze=True
 		option $nein$:
 			"Du lässt die Münze liegen und gehst zurück in den Raum"
 	option $Tür$:

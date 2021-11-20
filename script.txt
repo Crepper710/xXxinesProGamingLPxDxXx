@@ -1,0 +1,320 @@
+var: Schlüssel_Anzahl=0
+var: Schalter1=oberen
+var: Schalter2=oberen
+var: Schalter3=oberen
+field: Startraum
+	"Es ist ein kleiner Raum mit einem schäbigen Bett, einem kleinen vergitterten Fenster, einem Stuhl und einer Tür. Was willst du untersuchen?"
+	option $Bett$:
+		"Es ist ein kleines und sehr altes Bett. Das Kissen und die Decke sind löchrig und stinken. Willst du das Bett weiter untersuchen"
+		option $ja$&&Pilze_genommen=='False':
+			"Auf der Matratze wachsen Pilze. Willst du einen mitnehmen?"
+			option $ja$:
+				var: Pilz=True
+				var: Pilze_genommen==True
+			option $nein$:
+				goto: Startraum
+		option $ja$&&Pilze_genommen=='True':
+			"Hier gibt es nichts mehr zu sehen"
+		option $nein$:
+			goto: Startraum
+		goto: Startraum
+	option $Fenster$:
+		"Das Fenster ist zu hoch und zu klein um hindurch zu klettern. Du sieht das es Nacht ist. Hier gibt es nichts mehr."
+		goto: Startraum
+	option $Stuhl$&&Stuhl_aufgehoben=='True':
+		"Du hast den Stuhl schon aufgehoben"
+	option $Stuhl$:
+		"Es ist ein Stuhl. Er sieht ungewöhnlich schwer aus. Willst du ihn aufheben?"
+		option $ja$:
+			"Du hast den Stuhl aufgehoben."
+			var: Stuhl=True
+			var: Stuhl_aufgehoben=True
+		option $nein$:
+			goto: Startraum
+		goto: Startraum
+	option $Tür$&&Tür1=='True':
+		"Du kannst diesen Raum verlassen. Willst du ihn verlassen?"
+		option $ja$:
+			"Du verlässt den Raum"
+			goto: Gang_1_2
+		option $nein$:
+			goto: Startraum
+	option $Tür$:
+		"Tür ist verschlossen. Willst du sie untersuchen?"
+		option $ja$:
+			"Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss. Etwas schweres könnte die Tür zerstören"
+		option $ja$&&Stuhl=='True':
+			"Willst du mit dem Stuhl darauf einschlagen?"
+			option $nein$:
+				goto: Startraum
+			option $ja$:
+				"Die Tür und der Stuhl zerbersten gleichzeitig in einem sehr lauten Kracher. Du kannst nun das Zimmer verlassen."
+				var: Tür1=True
+				var: Stuhl=False
+		option $nein$:
+			goto: Startraum
+field: Gang_1_2
+	"Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden und zwei Türen."
+	if Gang_1_2_betreten=='True':
+		"Die erste Tür führt zum Raum, in welchem du aufgewacht bist und die zweite Tür führt zum zentralen Raum, in welchem das mystische Tor steht."
+	if Gang_1_2_betreten=='False':
+		"Die erste Tür führt zum Raum, in welchem du aufgewacht bist. Die zweite Tür hast du noch nicht betreten."
+	"Durch welche Tür willst du gehen?"
+	option $erste$:
+		goto: Startraum
+	option $zweite$:
+		var: Gang_1_2_betreten=True
+		goto: Portalraum
+field: Portalraum
+	"Du betrittst einen großen Raum mit einer hohen Decke und retualistischen Dekorationen. Du erblickst ein Tor, welches sich in der Mitte des Raums befindet, einem Schrein mit einer Statue und drei Türen. Die erste Tür führt zu dem Raum, in welchem du aufgewacht bist. Über der zweiten Tür hängt ein Schild mit dem Schriftzug Kanalisation und Schlafbereich. Die dritte Tür ist vergittert mit einem rostigen Schloss. Wohin willst du gehen?"
+	option $Tor$&&Schlüssel_Anzahl==3:
+		"Das Tor besteht aus einem dir unbekanntem Material und ist bedeckt mit unbekannten Symbolen und drei Schlössern. Du spürst, dass es eine mystische Präsenz ausstrahlt."
+		"Du hast alle drei Schlüssel gefunden und kannst das Tor öffnen. Willst du das Tor öffen?"
+		option $ja$:
+			"Du öffnest das Tor. wärend sich das Enorme Tor öffnet spürt du eine enorme Hitze, welche aus dem Tor entweicht. Auf einmal hörst du eine dunkle Stimme aus dem Tor rufen. Sterblicher, du hast das Tor zur Hölle geöffnet. Dank dir können wir endlich diese Welt einnehmen. Das Tor öffnet sich. Eine riesige Hand greift nach dir. Es wird dunkel."
+			end
+		option $nein$:
+			"Du gehtst zurück"
+			goto: Portalraum
+	option $Tor$:
+		"Das Tor besteht aus einem dir unbekanntem Material und ist bedeckt mit unbekannten Symbolen und drei Schlössern. Du spürst, dass es eine mystische Präsenz ausstrahlt."
+		"Du besitzt <value expr="Schlüssel_Anzahl"/> von 3 Schlüsseln."
+	option $Schrein$&&Dolch=='True'&&Blutopfer=='False':
+		"Die, mit der Statue abgebildete, Entität sieht gefärlich aus. Sie lässt sich als das Abbild von Brutatiltät und Erbarmunslosigkeit beschreiben. Sie hält eine Schale in der Hand"
+		"Du kannst mit deinem Doch ein Blutopfer durchführen. Willst du ein Blutopfer durchführen?"
+		option $ja$:
+			"Die Entität ist zufrieden mit deinem Opfer. Du fällst in Ohnmacht. Etwas später wachst du auf. Du liegst auf dem Boden und bemerkst etwas in deiner Hand. Es ist ein Schlüssel."
+			var: Schlüssel_Anzahl=Schlüssel_Anzahl+1
+			var: Blutopfer=True
+		option $nein$:
+			"Du gehtst zurück"
+			goto: Portalraum
+	option $Schrein$&&Münze=='True':
+		"Die, mit der Statue abgebildete, Entität sieht gefärlich aus. Sie lässt sich als das Abbild von Brutatiltät und Erbarmunslosigkeit beschreiben. Sie hält eine Schale in der Hand"
+		"Du hast eine antike Münze, welche du Opfern kannst. Willst du sie opfern?"
+		option $ja$:
+			"Die Entität ist wütend auf dich. Du spurst ein wachsendes Drücken in deinem Magen. Es quillen Münzen aus deinem Mund. Du fällst auf den Boden. Du stirbst mit höllischen Schmerzen."
+			end
+		option $nein$:
+			"Du gehtst zurück"
+			goto: Portalraum
+	option $Schrein$:
+		"Die, mit der Statue abgebildete, Entität sieht gefärlich aus. Sie lässt sich als das Abbild von Brutatiltät und Erbarmunslosigkeit beschreiben. Sie hält eine Schale in der Hand"
+		goto: Portalraum
+	option $erste Tür$:
+		"Du gehst durch die erste Tür"
+		goto: Gang_1_2
+	option $zweite Tür$:
+		"Du gehst durch die zweite Tür"
+		goto: Gang_2_3
+	option $dritte Tür$:
+		"Du gehst durch die dritte Tür"
+		goto: Gang_2_4
+field: Gang_2_3
+	"Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden und zwei Türen."
+	if Gang_2_3_betreten=='True':
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür führt zur Kanalisation"
+	if Gang_2_3_betreten=='False':
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür hast du noch nicht betreten."
+	"Durch welche Tür willst du gehen?"
+	option $erste$:
+		goto: Portalraum
+	option $zweite$:
+		var: Gang_2_3_betreten=True
+		goto: Kanalisation //bis hier überarbeitet
+field: Gang_2_4
+	if Schalter1=='oberen'&&Schalter2=='unteren'&&Schalter3=='oberen': //passt das?
+		var: Falle_aktiv=False
+	if Falle_aktiv=='True':
+		"Du verlässt den Kerker und betrittst den Gang. Auf einmal schnellen viele Stachel aus dem Boden. Du wirst mehrmals durchbohrt und alles um dich wird dunkel."
+		end
+	"Du befindest dich in einem dunklen Gang. Du entdeckst einige Ausgebrannte Fackeln an den Wänden, Löcher im Boden, einen Schädel und zwei Türen."
+	if Gang_2_4_betreten=='True':
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür führt zum Kerker"
+	if Gang_2_4_betreten=='False':
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür hast du noch nicht betreten."
+	"Durch welche Tür willst du gehen?"
+	option $erste$:
+		goto: Portalraum
+	option $zweite$:
+		var: Gang_2_4_betreten=True
+		goto: Kerker
+field: Kerker
+	"Der Raum den du betrittst ist in einem ähnlichen Zustand, wie der in dem du aufgewacht bist. Es hängen Ketten an den Wänden und es liegt Stroh auf dem Boden. An einer Wand hängen drei ausgebrannte Fackeln und in der Mitte des Raumes liegt eine Leiche. Hinter dir ist die Tür, durch welche du reingekommen bist. Wohin willst du gehen?"
+	option $Leiche$&&Dolch_genommen=='False':
+		"Es ist eine sehr alte schon ausgetrocknete Leiche."
+		"Du entdeckst einen Dolch in ihrem Brustkorb. Willst du den Dolch aufheben?"
+		option $ja§:
+			"Du ziehst den Doch aus der Leiche raus. Dabei fällt dir ein Zettel in der Hand der Leiche auf. Du hebst beide auf."
+			var: Dolch=True
+			var: Dolch_genommen=True
+			"Willst du die Notiz lesen?"
+			option $ja$:
+				"Auf der Notiz sind ein ein Kreis, ein Quadrat und ein Kreis abgebildet. Die Notiz zerfällt zu Staub."
+				goto: Kerker
+			option $nein$:
+				"Die Notiz zerfällt zu Staub, ohne das du sie gelesen hast."
+				goto: Kerker
+		option $nein$:
+			"Die Leiche hat nichts besonderes an sich. Du langweilst dich und gehst zurück"
+			goto: Kerker
+	option $Leiche$:
+		"Es ist eine sehr alte schon ausgetrocknete Leiche."
+	option $Fackeln$:
+		"Bei genauerem Ansehen sind es keine normalen Fackeln, sondern schalter. Der erste Schalter ist in der <value expr="Schalter1"/> Position. Der zweite Schalter ist in der <value expr="Schalter2"/> Position. Der dritte Schalter ist in der <value expr="Schalter3"/> Position. Welchen Schalter willst du umschalten?"
+		option $ersten$&&Schalter1=='oberen':
+			"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
+			var: Schalter1='unteren'
+			goto: Kerker
+		option $ersten$&&Schalter1=='unteren':
+			"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
+			goto: Kerker
+		option $zweiten$&&Schalter2=='oberen':
+			"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
+			var: Schalter2=unteren
+			goto: Kerker
+		option $zweiten$&&Schalter2=='unteren':
+			"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
+			goto: Kerker
+		option $dritten$&&Schalter3=='oberen':
+			"Du schaltest den Schalter nach unten. Deine Arme schmerzen. Du ruhst dich im Raum aus."
+			var: Schalter3=unteren
+			goto: Kerker
+		option $dritten$&&Schalter3=='unteren':
+			"Der Schalter klemmt. Du bist in deinen jetzigen Zustand zu schwach, um ihn zu lösen. Du gibst auf."
+			goto: Kerker
+	option $Tür§:
+		"Du gehst zurück in den Gang."
+		var: Falle_aktiv=True
+		goto: Gang_2_4
+field: Kanalisation
+	"Du betrittst einen feuchten Raum. Du hörst rauschendes Wasser. Den Raum teilt eine vergitterte Wand. Hinter dieser erblickst du etwas, was einem Goblin ähnelt. Zusätzlich befinden sich zwei Türen in dem Raum."
+	if Kanalisation_betreten=='True':
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür führt zur Kaserne."
+	if Kanalisation_betreten=='False':
+		"Die erste Tür führt zum zentralen Raum, in welchem das mystische Tor steht. Die zweite Tür hast du noch nicht betreten."
+	"Wohin willst du gehen?"
+	option $Goblin$&&Dolch=='True'&&Pilz=='True': // muss || durch && ersetzt werden?
+		"Beim Herantreten merkst du das der Goblin vor dir wegweicht. Er verhält sich unerwarted ruhig und gutmütig für einen Goblin. Du bemerkst, dass er abgemagert ist."
+		"Du hast einen Dolch und einen Pilz. Willst du den Goblin erstechen, ihm den Pilz geben oder weg gehen?"
+		option $erstechen$:
+			"Du greifst den Goblin an kannst ihn leider nicht erreichen. Als eine Reaktion auf auf deinen Angriff wirft er sich mit etwas spitzem ab, aber schafft es nur dich kratzen. Du fällst auf den Boden und kannst dich nicht bewegen. Du weißt, dass der Angriff zu schwach war um das mit dir anzustellen. Du verbringst Tagen in diesem Zustand der Paralyse, bis du verdurstest, ohne herausgefunden zu haben das sein Angriff vergiftet war."
+			end
+		option $Pilz geben$:
+			"Du gibst dem Goblin den Pilz. Er isst ihn. Der Goblin gibt dir etwas zurück. Es ist ein Schlüssel. Du nimmst ihn und gehst in den Raum zurück."
+			var: Pilz=False
+			var: Schlüssel_Anzahl=Schlüssel_Anzahl+1
+			goto: Kanalisation
+		option $gehen$:
+			"Du gehst in den Raum zurück."
+			goto: Kanalisation
+	option $Goblin$&&Dolch=='True'&&Pilz=='False':
+		"Beim Herantreten merkst du das der Goblin vor dir wegweicht. Er verhält sich unerwarted ruhig und gutmütig für einen Goblin. Du bemerkst, dass er abgemagert ist."
+		"Du hast einen Dolch. Willst du den Goblin erstechen?"
+		option $ja$:
+			"Du greifst den Goblin an kannst ihn leider nicht erreichen. Als eine Reaktion auf auf deinen Angriff wirft er sich mit etwas spitzem ab, aber schafft es nur dich kratzen. Du fällst auf den Boden und kannst dich nicht bewegen. Du weißt, dass der Angriff zu schwach war um das mit dir anzustellen. Du verbringst Tagen in diesem Zustand der Paralyse, bis du verdurstest, ohne herausgefunden zu haben das sein Angriff vergiftet war."
+			end
+	option $Goblin$&&Pilz=='True'&&Dolch=='False':
+		"Beim Herantreten merkst du das der Goblin vor dir wegweicht. Er verhält sich unerwarted ruhig und gutmütig für einen Goblin. Du bemerkst, dass er abgemagert ist."
+		"Du hast einen Pilz. Willst du ihn dem Goblin geben?"
+		option $Ja$:
+			"Du gibst dem Goblin den Pilz. Er isst ihn. Der Goblin gibt dir etwas zurück. Es ist ein Schlüssel. Du nimmst ihn und gehst in den Raum zurück."
+			var: Pilz=False
+			var: Schlüssel_Anzahl=Schlüssel_Anzahl+1
+			goto: Kanalisation
+		option $Nein$:
+			"Du gehst in den Raum zurück"
+			goto: Kanalisation
+	option $Goblin$:
+		"Beim Herantreten merkst du das der Goblin vor dir wegweicht. Er verhält sich unerwarted ruhig und gutmütig für einen Goblin. Du bemerkst, dass er abgemagert ist."
+	option $erste Tür$:
+		"Du gehst durch die erste Tür"
+		goto: Gang_2_3
+	option $zweite Tür$:
+		"Du gehst durch die zweite Tür"
+		goto: Gang_3_5
+field: Gang_3_5
+	"Du befindest dich in einem dunklen Gang. Du siehst einige Ausgebrannte Fackeln an den Wänden und zwei Türen."
+	if Gang_3_5_betreten==True:
+		"Die erste Tür führt zur Kanalisation. Die zweite Tür führt zur Kaserne."
+	if Gang_3_5_betreten=False:
+		"Die erste Tür führt zur Kanalisation. Die zweite Tür hast du noch nicht betreten."
+	"Durch welche Tür willst du gehen?"
+	option $erste$:
+		"Du gehst durch die erste Tür."
+		goto: Kanalisation
+	option $zweite$&&Tür8=='False'&&Dolch=='True':
+		"Die Tür ist verschlossen. Das Schloss scheint leicht zu sein."
+		"Du kannst das Schloss mit dem Dolch öffnen. Willst du das Schloss öffnen."
+		option $ja$:
+			"Du brichst den Rahmen der Tür auf. Die Tür öffnet sich. Du trittst ein."
+			var: Tür8=True
+			goto: Kaserne
+		option $nein$:
+			"Du gehst von der Tür zurück"
+			goto: Gang_3_5
+		if Dolch=='False':
+			"Du kannst die Tür nicht öffnen und trittst von ihr weg."
+	option $zweite$&&Tür8=='False':
+		"Die Tür ist verschlossen. Das Schloss scheint leicht zu sein."
+	option $zweite$&&Tür8=='True':
+		"Du gehst durch die zweite Tür."
+		var: Gang_3_5_betreten=True
+		goto: Kaserne
+field: Kaserne
+	"Du betrittst einen Raum mit mehreren Betten und drei Türen. Die erste Tür führt zur Kanalisation. Über der zweiten Tür hängt ein goldenes Schild mit unbekannter Schrift.  Über der dritten Tür hängt ein silbernes Schild mit unbekannter Schrift. Wohin willst du gehen?"
+	option $erste$:
+		"Du gehst durch die erste Tür."
+		goto: Gang_3_5
+	option $zweite$:
+		"Du gehst durch die zweite Tür."
+		goto: Raum_Anführer
+	option $dritte$:
+		"Du gehst durch die dritte Tür."
+		goto: Raum_Vize
+field: Raum_Anführer
+	"Es ist ein sehr enger Raum. In dem Raum befindet sich ein Bett, ein Schreibtisch und die Tür durch welche du reingekommen bist. Wohin willst du gehen"
+	option $Bett$:
+		"Es ist ein sehr ordentlich gedecktes Bett. Du findest nichts aussergewöhnliches und gehst zurück in den Raum."
+		goto: Raum_Anführer
+	option $Schreibtisch$:
+		"Die Oberfläche des Schreibtisches ist komplett leer. Der Schreibtisch hat eine Schublade. Willst du sie öffnen?"
+		option $ja$&&Schreibtisch_geöffnet=='False'&&Dolch=='True':
+			"Die Schublade ist verschlossen."
+			"Du hast einen Dolch. Willst du sie Damit aufbreichen?"
+			option $ja$:
+				"Du brichst die Schublade auf. Dir wird schwarz von den Augen und du fällst in Ohnmacht. Du wachst einige Zeit später auf und stehst auf. Du denkst dir, dass du dich überanstregt hast."
+				var: Schreibtisch_geöffnet=True
+				goto: Raum_Anführer
+			option $nein$:
+				"Du lässt die Schublade sein und gehst zurück in den Raum."
+				goto: Raum_Anführer
+		option $ja$&&Schreibtisch_geöffnet=='False':
+			"Die Schublade ist verschlossen."
+		option $ja$&&Schreibtisch_geöffnet=='True':
+			"In der Schublade befindet sich ein Buch. Das Buch hat einen Umschlag aus unbekanntem Leder. In das Leder sind unbekannte Symbole eingraviert. Du öffnest das Buch und versuchst die Schrift zu lesen, aber verstehst die Symbole nicht. Du versuchst es nochmal. In diesem Durchlauf kannst du die Schrift teilweise lesen. Du versuchst es ein drittes Mal. Dieses Mal verstehst du den Text Vollständig. In dem Text steht, spalte die Haut für den Dritten. Du verstehst dieses Rätzel in zwei verschiedenen Weisen. Die erste ist, dass du dir mit dem Dolch die Haut schneiden musst. Die zweite ist, dass du den Umschlag des Buches schneiden musst. Welche Möglichkeit wählst du?"
+			option $erste$:
+				"Du schneidest deine Haut auf, bemerkst aber nichts abnormales. Du vergrößerst die Wunde, bemerkst dieses Mal auch nichts abnormales. Du entscheidest dich die Wunde noch weiter zu vergrößern, fällst aber auf den Boden. Du liegst in einer Warmen Pfütze und alles um dich rum wird dunkel."
+				end
+			option $zweite$:
+				"Du schneidest den Umschlag auf. Hinter diesem befindet sich ein Schlüssel. Du nimmst den Schlüssel auf, schließt die Schublade und gehst zurück in den Raum."
+				var: Schlüssel_Anzahl=Schlüssel_Anzahl+1
+				goto: Raum_Anführer
+	option $Tür$:
+		"Du gehst zurück in den großen Raum mit Betten."
+		goto: Kaserne
+field: Raum_Vize
+	"Es ist ein sehr enger Raum. In dem Raum befindet sich ein Bett, ein Schreibtisch und die Tür durch welche du reingekommen bist. Wohin willst du gehen"
+	option $Bett$:
+		"Es ist ein sehr unordentlich gedecktes Bett. Du findest nichts aussergewöhnliches außer dem Gestank und gehst zurück in den Raum."
+		goto: Raum_Vize
+	option $Schreibtisch$:
+		"Auf dem Schreibtisch befindet sich eine einzige antike Münze. willst du sie aufheben?"
+		option $ja$:
+			"Du hebst die Münze auf und gehst zurück in den Raum."
+			var: Münze=True
+		option $nein$:
+			"Du lässt die Münze liegen und gehst zurück in den Raum"
+	option $Tür$:
+		"Du gehst zurück in den großen Raum mit Betten."
+		goto: Kaserne

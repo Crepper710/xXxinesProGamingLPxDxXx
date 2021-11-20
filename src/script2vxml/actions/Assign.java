@@ -19,4 +19,12 @@ public class Assign extends VXMLAction {
 		return sb.toString();
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	public String getExpr() {
+		return expr;
+	}
+	
 }

@@ -1,0 +1,51 @@
+field: Startraum
+	"Es ist ein kleiner Raum mit einem schäbigen Bett, einem kleinen vergitterten Fenster, einem Stuhl und einer Tür. Was willst du untersuchen?"
+	option $Bett$:
+		"Es ist ein kleines und sehr altes Bett. Das Kissen und die Decke sind löchrig und stinken. Willst du das Bett weiter untersuchen"
+		option $ja$&&Pilze_genommen=='False':
+			"Auf der Matratze wachsen Pilze. Willst du einen mitnehmen?"
+			option $ja$:
+				var: Pilz=True
+				var: Pilze_genommen==True
+			option $nein$:
+				goto: Startraum
+		option $ja$&&Pilze_genommen=='True':
+			"Hier gibt es nichts mehr zu sehen"
+		option $nein$:
+			goto: Startraum
+		goto: Startraum
+	option $Fenster$:
+		"Das Fenster ist zu hoch und zu klein um hindurch zu klettern. Du sieht das es Nacht ist. Hier gibt es nichts mehr."
+		goto: Startraum
+	option $Stuhl$&&Stuhl_aufgehoben=='True':
+		"Du hast den Stuhl schon aufgehoben"
+	option $Stuhl$:
+		"Es ist ein Stuhl. Er sieht ungewöhnlich schwer aus. Willst du ihn aufheben?"
+		option $ja$:
+			"Du hast den Stuhl aufgehoben."
+			var: Stuhl=True
+			var: Stuhl_aufgehoben=True
+		option $nein$:
+			goto: Startraum
+		goto: Startraum
+	option $Tür$&&Tür1=='True':
+		"Du kannst diesen Raum verlassen. Willst du ihn verlassen?"
+		option $ja$:
+			"Du verlässt den Raum"
+			goto: Gang_1_2
+		option $nein$:
+			goto: Startraum
+	option $Tür$:
+		"Tür ist verschlossen. Willst du sie untersuchen?"
+		option $ja$:
+			"Die Tür ist besteht aus verwittertem Holz und einem rostigen Schloss. Etwas schweres könnte die Tür zerstören"
+		option $ja$&&Stuhl=='True':
+			"Willst du mit dem Stuhl darauf einschlagen?"
+			option $nein$:
+				goto: Startraum
+			option $ja$:
+				"Die Tür und der Stuhl zerbersten gleichzeitig in einem sehr lauten Kracher. Du kannst nun das Zimmer verlassen."
+				var: Tür1=True
+				var: Stuhl=False
+		option $nein$:
+			goto: Startraum
